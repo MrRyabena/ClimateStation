@@ -11,7 +11,6 @@
 *.embed.manifest
 *.moc
 *.o
-*.obj
 *.orig
 *.prl
 *.qm
@@ -133,7 +132,6 @@ compile_commands.json
 # ---------------------
 
 .moc/
-.obj/
 .pch/
 .rcc/
 .uic/
@@ -287,8 +285,6 @@ StyleCopReport.xml
 *_h.h
 *.ilk
 *.meta
-*.obj
-*.iobj
 *.pch
 *.pdb
 *.ipdb
