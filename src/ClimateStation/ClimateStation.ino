@@ -1,3 +1,5 @@
+#include "settings.h"
+
 #define DEBUG
 #define SHS_SF_DEBUG
 
@@ -11,19 +13,29 @@
 #include <shs_ControlWiFi.h>
 #include <GyverNTP.h>
 
-shs::ClimateStation climate_station(nullptr, nullptr, nullptr, nullptr, std::make_shared<GyverNTP>(shs::settings::GMT));
+
+shs::ClimateStation climate_station(
+    std::make_shared<shs::MHZ19>(MHZ19_RX, MHZ19_TX),
+    std::make_shared<shs::BME280>(BME280_CACHE_EXPIRATION_TIME),
+    nullptr,
+    std::make_shared<GyverDS3231>(),
+    std::make_shared<GyverNTP>(shs::settings::GMT)
+);
 
 
-void setup() 
+void setup()
 {
-  dinit();
-  doutln("");
-  shs::ControlWiFi::connectWiFiWait();
-  doutln("ok");
+    dinit();
+    doutln("");
 
-  climate_station.start();
+    shs::ControlWiFi::connectWiFi();
+
+    climate_station.start();
+    doutln("ok");
 }
 
-void loop() {
-  climate_station.tick();
+
+void loop()
+{
+    climate_station.tick();
 }

@@ -3,10 +3,14 @@
 
 #include <memory>
 
-#include <microLED.h>
+//#include <microLED.h>
 
 #include <shs_Process.h>
 
+#include <TFT_eSPI.h>
+
+
+#include <shs_debug.h>
 
 
 class shs::ClimateStationVisualizer : public shs::Process
@@ -14,8 +18,8 @@ class shs::ClimateStationVisualizer : public shs::Process
 public:
     ClimateStationVisualizer(
         shs::ClimateStation& climate_station,
-        std::shared_ptr<TFT_eSPI> tft,
-        std::shared_ptr<microLED> aled
+        std::shared_ptr<TFT_eSPI> tft//,
+    //    std::shared_ptr<microLED> aled
     );
 
     void start() override;
@@ -24,6 +28,6 @@ public:
 
 protected:
     std::shared_ptr<TFT_eSPI> m_tft;
-    std::shared_ptr<microLED> m_aled;
+//    std::shared_ptr<microLED> m_aled;
 
 };

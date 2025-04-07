@@ -5,6 +5,7 @@ shs::ClimateStation::ClimateStation(std::shared_ptr<shs::MHZ19> mhz19, std::shar
     : m_mhz19(mhz19), m_bme(bme), m_dht(dht), m_rtc(rtc), m_ntp(ntp)
 {}
 
+
 void shs::ClimateStation::start()
 {
     if (m_mhz19) m_mhz19->setup();
@@ -15,9 +16,11 @@ void shs::ClimateStation::start()
     if (m_ntp)
     {
         m_ntp->begin(shs::settings::GMT);
+
         if (m_rtc) m_ntp->attachRTC(*m_rtc);
     }
 }
+
 
 void shs::ClimateStation::tick()
 {
@@ -29,16 +32,6 @@ void shs::ClimateStation::tick()
         Data data;
         m_updateSensors();
         m_updateData(data);
-        dsep();
-        dout("CO2: "); doutln(data.CO2);
-        dout("pressure: "); doutln(static_cast<float>(data.pressure));
-        dout("indoor_temperature: "); doutln(static_cast<float>(data.indoor_temperature));
-        dout("outdoor_temperature: "); doutln(static_cast<float>(data.outdoor_temperature));
-        dout("indoor_humidity: "); doutln(static_cast<float>(data.indoor_humidity));
-        dout("outdoor_humidity: "); doutln(static_cast<float>(data.outdoor_humidity));
-        dout("time: "); doutln(data.time);
-        if (m_ntp) doutln(m_ntp->timeToString());
-        dsep();
 
         m_main_tmr.reset();
     }
@@ -74,20 +67,22 @@ uint8_t shs::ClimateStation::m_allSensUpdated()
 
 void shs::ClimateStation::m_updateData(Data& data)
 {
+    m_updateSensors();
     if (m_mhz19) data.CO2 = m_mhz19->getValueI(shs::etoi(shs::MHZ19::Metrics::PPM));
     else data.CO2 = 0;
 
     if (m_bme)
     {
+        doutln(m_bme->getStatus());
         data.pressure = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::PRESSURE_BAR));
         data.indoor_temperature = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::TEMPERATURE));
-        data.outdoor_temperature = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::HUMIDITY));
+        data.indoor_humidity = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::HUMIDITY));
     }
     else
     {
-        data.pressure = 0;
-        data.indoor_temperature = 0;
-        data.outdoor_temperature = 0;
+        data.pressure = shs::t::shs_fixed_t(0);
+        data.indoor_temperature = shs::t::shs_fixed_t(0);
+        data.outdoor_temperature = shs::t::shs_fixed_t(0);
     }
 
     if (m_dht)
@@ -97,8 +92,8 @@ void shs::ClimateStation::m_updateData(Data& data)
     }
     else
     {
-        data.outdoor_temperature = 0;
-        data.outdoor_humidity = 0;
+        data.outdoor_temperature = shs::t::shs_fixed_t(0);
+        data.outdoor_humidity = shs::t::shs_fixed_t(0);
     }
 
     if (m_rtc) data.time = Datime(*m_rtc).getUnix();
@@ -106,3 +101,31 @@ void shs::ClimateStation::m_updateData(Data& data)
     else data.time = 0;
 
 }
+
+
+#ifdef SHS_SF_DEBUG
+void shs::ClimateStation::debug_print_data(const Data& data) const
+{
+    dsep();
+    doutln("CLIMATE_STATION_DATA\n");
+    dout("CO2:                  "); doutln(data.CO2);
+    dout("pressure:             "); doutln(static_cast<float>(data.pressure));
+    dout("indoor_temperature:   "); doutln(static_cast<float>(data.indoor_temperature));
+    dout("outdoor_temperature:  "); doutln(static_cast<float>(data.outdoor_temperature));
+    dout("indoor_humidity:      "); doutln(static_cast<float>(data.indoor_humidity));
+    dout("outdoor_humidity:     "); doutln(static_cast<float>(data.outdoor_humidity));
+    dout("time:                 "); doutln(data.time);
+    if (m_ntp) doutln(m_ntp->timeToString());
+    if (m_rtc) dout("ds time: "); dout(m_rtc->isOK()); doutln(m_rtc->getTime().timeToString());
+    dsep();
+
+}
+
+
+void shs::ClimateStation::debug_print_status() const
+{
+    dsep();
+    doutln("CLIMATE_STATION_STATUSES");
+
+}
+#endif

@@ -20,7 +20,9 @@
 #include <shs_settings_private.h>
 #include <shs_utils.h>
 
-#define SHS_SF_DEBUG
+#include <WiFi.h>
+
+
 #include <shs_debug.h>
 
 
@@ -33,7 +35,7 @@ namespace shs
 
 class shs::ClimateStation : public shs::Process
 {
-    
+
     friend class shs::ClimateStationVisualizer;
 
 public:
@@ -68,6 +70,11 @@ public:
         shs::t::shs_time_t time;
     };
 
+
+#ifdef SHS_SF_DEBUG
+    void debug_print_data(const Data& data) const;
+    void debug_print_status() const;
+#endif
 
 protected:
     enum M_SensorsNumbers { MHZ19_b = 0b1, BME280_b = 0b10, DHT_b = 0b100, UPDATING_TIMEOUT_b = 0b1000 };
