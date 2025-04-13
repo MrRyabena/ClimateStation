@@ -12,3 +12,4 @@
 |8.|usb type c|socket|—|[Aliexpress](https://aliexpress.ru/item/1005006047462864.html?spm=a2g2w.orderdetail.0.0.5d024aa68kpzCg&sku_id=12000044239785227)|12x15x4 + 16x12|Usp-socket for power supply|
 |9.|Buzzer|buzzer|—|—|—|Buzzer|
 |10.|ARGB led|LED|—|—|10x17 (1 segment)|Illumination of the lower part|
+|11.|Outdoor sensor connector|connector|—|[Ozon](https://www.ozon.ru/product/razemy-3pin-shag-2-54mm-shteker-na-platu-gnezdo-na-provode-300mm-2-komplekta-1553830306/)|6x10x7 + (pins) 3(len)x2.5(step)|Connector for outdoor sensor (DHT22)|
