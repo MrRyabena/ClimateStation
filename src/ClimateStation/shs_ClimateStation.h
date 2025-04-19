@@ -29,6 +29,7 @@
 namespace shs
 {
     class ClimateStation;
+    class ClimateStationStorage;
     class ClimateStationVisualizer;
 }
 
@@ -37,6 +38,7 @@ class shs::ClimateStation : public shs::Process
 {
 
     friend class shs::ClimateStationVisualizer;
+    friend class shs::ClimateStationStorage;
 
 public:
     explicit ClimateStation(
@@ -50,7 +52,7 @@ public:
 
     ~ClimateStation() = default;
 
-
+   
     void start() override;
     void tick() override;
     void stop() override;
@@ -69,6 +71,8 @@ public:
 
         shs::t::shs_time_t time;
     };
+
+    Data getData() { Data data; m_updateData(data); return data; }
 
 
 #ifdef SHS_SF_DEBUG

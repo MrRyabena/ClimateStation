@@ -8,6 +8,10 @@
 #include <memory>
 
 #include "shs_ClimateStation.h"
+#include "shs_ClimateStationVisualizer.h"
+
+#include <SPI.h>
+#include <TFT_eSPI.h>       // https://github.com/Bodmer/TFT_eSPI
 
 
 #include <shs_ControlWiFi.h>
@@ -23,6 +27,12 @@ shs::ClimateStation climate_station(
 );
 
 
+shs::ClimateStationVisualizer climate_station_visualizer(
+    climate_station,
+    std::make_shared<TFT_eSPI>()
+);
+
+
 void setup()
 {
     dinit();
@@ -31,6 +41,7 @@ void setup()
     shs::ControlWiFi::connectWiFi();
 
     climate_station.start();
+    climate_station_visualizer.start();
     doutln("ok");
 }
 
@@ -38,4 +49,5 @@ void setup()
 void loop()
 {
     climate_station.tick();
+    climate_station_visualizer.tick();
 }
