@@ -24,7 +24,8 @@ public:
     shs::t::shs_color_t background_color;
     shs::t::shs_color_t foreground_color;
 
-    RectWidget(const std::shared_ptr<TFT_eSPI> tft, const shs::t::shs_coord_t x, const shs::t::shs_coord_t y,
+    RectWidget(const std::shared_ptr<TFT_eSPI> tft,
+        const shs::t::shs_coord_t x, const shs::t::shs_coord_t y,
         const shs::t::shs_coord_t width, const shs::t::shs_coord_t height,
         const shs::t::shs_coord_t set_radius, const shs::t::shs_coord_t set_stroke,
         const shs::t::shs_color_t set_stroke_color = shs::ThemeColors::MINT,
