@@ -36,6 +36,8 @@ public:
     void tick() override;
     void stop() override {}
 
+    void printDebug(const String& str, const uint16_t x, const uint16_t y);
+
 protected:
     std::shared_ptr<TFT_eSPI> m_tft;
     shs::ClimateStation& m_cls;

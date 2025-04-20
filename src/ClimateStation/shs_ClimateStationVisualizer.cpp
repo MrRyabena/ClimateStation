@@ -21,12 +21,12 @@ void shs::ClimateStationVisualizer::tick()
     {
         if (m_tft)
         {
-           // m_tft->fillScreen(rgb565(0x00, 0x12, 0x19));
+            m_tft->fillScreen(m_rgb565(0x00, 0x12, 0x19));
 
             auto data = m_cls.getData();
 
-            String str = String("CO2:                  ") + data.CO2; m_tft->drawString(str, 20, 20, 2);
-            str = String("pressure:             ") + static_cast<float>(data.pressure); m_tft->drawString(str, 20, 48, 2);
+            String str = String("CO2:                  ") + data.CO2; m_tft->drawString(str, 20, 48, 2);
+            str = String("pressure:             ") + static_cast<float>(data.pressure); m_tft->drawString(str, 20, 63, 2);
             str = String("indoor_temperature:   ") + static_cast<float>(data.indoor_temperature); m_tft->drawString(str, 20, 76, 2);
             str = String("outdoor_temperature:  ") + static_cast<float>(data.outdoor_temperature); m_tft->drawString(str, 20, 104, 2);
             str = String("indoor_humidity:      ") + static_cast<float>(data.indoor_humidity); m_tft->drawString(str, 20, 132, 2);
@@ -38,6 +38,11 @@ void shs::ClimateStationVisualizer::tick()
 
         m_main_tmr.reset();
     }
+}
+
+void shs::ClimateStationVisualizer::printDebug(const String& str, const uint16_t x, const uint16_t y)
+{
+    if (m_tft) m_tft->drawString(str, x, y, 2);
 }
 
 
