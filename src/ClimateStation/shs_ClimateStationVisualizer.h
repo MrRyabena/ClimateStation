@@ -12,7 +12,7 @@
 #include <shs_Process.h>
 #include <shs_ProgramTime.h>
 
-#include <shs_debug.h>
+#include "GUIcore/shs_ThemeColors.h"
 
 
 class shs::ClimateStationVisualizer : public shs::Process

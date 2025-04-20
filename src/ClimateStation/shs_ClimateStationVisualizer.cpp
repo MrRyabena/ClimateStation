@@ -10,8 +10,7 @@ void shs::ClimateStationVisualizer::start()
     {
         m_tft->init();
         m_tft->setRotation(3);
-        m_tft->fillScreen(m_rgb565(0x001219));
-        m_tft->setTextColor(m_rgb565(0xE9D8A6), m_rgb565(0x001219));
+        m_tft->fillScreen(m_rgb565(shs::ThemeColors::BACKGROUND));
     }
 }
 
