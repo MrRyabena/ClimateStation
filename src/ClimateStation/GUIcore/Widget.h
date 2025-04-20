@@ -21,13 +21,19 @@ class shs::Widget : public shs::Process
 {
 public:
 
+    enum Align : uint8_t { LEFT = 0b1, HORIZONTAL_CENTER = 0b10, RIGHT = 0b100, TOP = 0b1000, VERTICAL_CENTER = 0b10000, BOTTOM = 0b100000 };
+
     shs::t::shs_coord_t x;
     shs::t::shs_coord_t y;
     shs::t::shs_coord_t width;
     shs::t::shs_coord_t height;
 
 
-    Widget(const std::shared_ptr<TFT_eSPI> tft, const shs::t::shs_coord_t set_x, const shs::t::shs_coord_t set_y, const shs::t::shs_coord_t set_width, const shs::t::shs_coord_t set_height);
+    Widget(
+        const std::shared_ptr<TFT_eSPI> tft,
+        const shs::t::shs_coord_t set_x, const shs::t::shs_coord_t set_y,
+        const shs::t::shs_coord_t set_width, const shs::t::shs_coord_t set_height
+    );
 
 
     [[nodiscard]] bool contain(const shs::t::shs_coord_t px, const shs::t::shs_coord_t py) const { return px >= x && px <= x + width && py >= y && py <= y + height; }
@@ -36,7 +42,15 @@ public:
     void tick() override { for (auto& x : m_layers) x->tick(); };
     void stop() override { for (auto& x : m_layers) x->stop(); };
 
-    void attachLayer(std::shared_ptr<shs::Widget> ptr) { m_layers.push_back(ptr); }
+    void setPosition(const shs::t::shs_coord_t px, const shs::t::shs_coord_t py);
+
+    void attachLayer(std::shared_ptr<shs::Widget> ptr) { if (ptr) m_layers.push_back(ptr); }
+    void attachLayer(std::shared_ptr<shs::Widget> ptr,
+        const shs::t::shs_coord_t px, const shs::t::shs_coord_t py,
+        const uint8_t align = 0,
+        const shs::t::shs_coord_t horizontal_margin = 0, const shs::t::shs_coord_t vertical_margin = 0
+    );
+
 
 protected:
     std::shared_ptr<TFT_eSPI> m_tft;
