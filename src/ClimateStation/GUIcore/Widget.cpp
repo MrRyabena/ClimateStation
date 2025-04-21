@@ -17,23 +17,38 @@ void shs::Widget::setPosition(const shs::t::shs_coord_t px, const shs::t::shs_co
 }
 
 
-void shs::Widget::attachLayer(std::shared_ptr<shs::Widget> ptr, const shs::t::shs_coord_t px, const shs::t::shs_coord_t py, const uint8_t align, const shs::t::shs_coord_t horizontal_margin, const shs::t::shs_coord_t vertical_margin)
+void shs::Widget::attachLayer(std::shared_ptr<shs::Widget> ptr, const uint8_t align, const shs::t::shs_coord_t horizontal_margin, const shs::t::shs_coord_t vertical_margin)
 {
     if (!ptr) return;
 
-    shs::t::shs_coord_t shift_x{}, shift_y{};
+    auto coords = getAligned(*this, *ptr, align, horizontal_margin, vertical_margin);
+    dout(coords.first); doutln(coords.second);
 
-    if (align & Align::HORIZONTAL_CENTER) shift_x = x + width / 2 - ptr->width / 2 + horizontal_margin;
-    else if (align & Align::LEFT)         shift_x = x + horizontal_margin;
-    else if (align & Align::RIGHT)        shift_x = x + width - ptr->width - horizontal_margin;
-    else                                  shift_x = x + px;
-
-    if (align & Align::VERTICAL_CENTER) shift_y = y + height / 2 - ptr->height / 2 + vertical_margin;
-    else if (align & Align::TOP)        shift_y = y + vertical_margin;
-    else if (align & Align::BOTTOM)     shift_y = y + height - ptr->height - vertical_margin;
-    else                                shift_y = y + py;
-
-    ptr->setPosition(shift_x, shift_y);
+    ptr->setPosition(coords.first, coords.second);
 
     m_layers.push_back(ptr);
+}
+
+std::pair<shs::t::shs_coord_t, shs::t::shs_coord_t> shs::Widget::getAligned(const shs::Widget& w1, const shs::Widget& w2, const uint8_t align, const shs::t::shs_coord_t horizontal_margin, const shs::t::shs_coord_t vertical_margin)
+{
+    shs::t::shs_coord_t next_x{}, next_y{};
+
+    if (align & Align::HORIZONTAL_CENTER) next_x = w1.x + w1.width / 2 - w2.width / 2 + horizontal_margin;
+    else if (align & Align::LEFT)         next_x = w1.x + horizontal_margin;
+    else if (align & Align::RIGHT)        next_x = w1.x + w1.width - w2.width - horizontal_margin;
+    else                                  next_x = w1.x + w2.x;
+
+    if (align & Align::VERTICAL_CENTER) next_y = w1.y + w1.height / 2 - w2.height / 2 + vertical_margin;
+    else if (align & Align::TOP)        next_y = w1.y + vertical_margin;
+    else if (align & Align::BOTTOM)     next_y = w1.y + w1.height - w2.height - vertical_margin;
+    else                                next_y = w1.y + w2.y;
+
+    return std::pair<shs::t::shs_coord_t, shs::t::shs_coord_t>(next_x, next_y);
+}
+
+void shs::Widget::setAligned(const shs::Widget& w1, shs::Widget& w2, const uint8_t align, const shs::t::shs_coord_t horizontal_margin, const shs::t::shs_coord_t vertical_margin)
+{
+    auto coords = getAligned(w1, w2, align, horizontal_margin, vertical_margin);
+
+    w2.setPosition(coords.first, coords.second);
 }
