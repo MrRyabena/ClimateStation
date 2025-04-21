@@ -75,7 +75,6 @@ void loop()
 
      if (tmr.milliseconds() >= 10'000)
      { 
-      
 
       //   climate_station_visualizer.tick();
       //   Wire.end();
@@ -98,6 +97,7 @@ void loop()
       //   rw.tick();
 
       window.tick();
-        tmr.reset();
+      window.updateData(climate_station.getData());
+      tmr.reset();
      }
 }
