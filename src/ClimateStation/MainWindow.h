@@ -2,10 +2,19 @@
 
 #include <memory>
 
+#include <Stamp.h>
+
 #include "GUIcore/Widget.h"
 #include "GUIcore/Label.h"
 #include "GUIcore/RectWidget.h"
 #include "GUIcore/shs_ThemeColors.h"
+
+#include "shs_ClimateStation.h"
+
+
+#define DEBUG
+#define SHS_SF_DEBUG
+#include <shs_debug.h>
 
 namespace shs
 {
@@ -20,5 +29,8 @@ public:
 
     void start() override;
     void tick() override;
+
+    void updateData(const shs::ClimateStation::Data& data);
+
 
 };
