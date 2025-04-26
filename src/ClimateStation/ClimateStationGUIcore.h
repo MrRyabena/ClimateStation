@@ -8,3 +8,5 @@
 #include "GUIcore/shs_ThemeColors.h"
 #include "GUIcore/Label.h"
 #include "GUIcore/Label.cpp"
+#include "GUIcore/IndicatorWidget.h"
+#include "GUIcore/IndicatorWidget.cpp"
