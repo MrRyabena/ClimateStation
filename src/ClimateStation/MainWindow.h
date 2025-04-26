@@ -8,6 +8,8 @@
 #include "GUIcore/Label.h"
 #include "GUIcore/RectWidget.h"
 #include "GUIcore/shs_ThemeColors.h"
+// #include "GUIcore/IndicatorWidget.cpp"
+#include "GUIcore/IndicatorWidget.h"
 
 #include "shs_ClimateStation.h"
 
@@ -31,6 +33,5 @@ public:
     void tick() override;
 
     void updateData(const shs::ClimateStation::Data& data);
-
 
 };

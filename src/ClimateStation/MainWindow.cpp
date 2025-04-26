@@ -70,7 +70,7 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
     {
         Stamp stamp(data.time);
 
-        shs::Label time(m_tft, stamp.timeToString(), 2, 2);
+        shs::Label time(m_tft, stamp.timeToString().substring(0, 5), 2, 2);
 
         shs::Widget::setAligned(*m_layers[0], time, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::VERTICAL_CENTER);
         time.tick();
@@ -79,59 +79,61 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
     // in
     {
         // CO2
-
-        shs::Label co2(m_tft, static_cast<shs::t::shs_string_t>(data.CO2), 2, 2);
-        co2.foreground_color = shs::ThemeColors::LIGHT_GREEN;
+        shs::IndicatorWidget co2(m_tft, 0, 0, width / 2 - 30, 0,
+            "ppm", 2, 2, 2, 1, shs::ThemeColors::LIGHT_GREEN);
 
         shs::Widget::setAligned(*m_layers[2], co2, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, 20);
 
-        co2.tick();
+        co2.draw(shs::t::shs_string_t(data.CO2), shs::IndicatorWidget::ValueTrend::INCREASING);
+
 
         // pressure
 
-        shs::Label pressure(m_tft, static_cast<shs::t::shs_string_t>(pressureToMmHg(data.pressure)), 2, 2);
-        pressure.foreground_color = shs::ThemeColors::LIGHT_GREEN;
+        shs::IndicatorWidget pressure(m_tft, 0, 0, width / 2 - 30, 0,
+            "mmHg", 2, 2, 2, 1, shs::ThemeColors::LIGHT_GREEN);
+
 
         shs::Widget::setAligned(*m_layers[2], pressure, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, co2.y + co2.height + 10);
 
-        pressure.tick();
-        
+        pressure.draw(shs::t::shs_string_t(pressureToMmHg(data.pressure), 1), shs::IndicatorWidget::ValueTrend::CONST);
+
+
         // temperature
-        
-        shs::Label temp(m_tft, static_cast<shs::t::shs_string_t>(data.indoor_temperature.toFloat()), 2, 2);
-        temp.foreground_color = shs::ThemeColors::LIGHT_GREEN;
+
+        shs::IndicatorWidget temp(m_tft, 0, 0, width / 2 - 30, 0,
+            "C", 2, 2, 2, 1, shs::ThemeColors::LIGHT_GREEN);
 
         shs::Widget::setAligned(*m_layers[2], temp, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, pressure.y + pressure.height + 10);
 
-        temp.tick();
+        temp.draw(shs::t::shs_string_t(data.indoor_temperature.toFloat(), 1), shs::IndicatorWidget::ValueTrend::DECREASING);
 
         // humidity
-         shs::Label hum(m_tft, static_cast<shs::t::shs_string_t>(data.indoor_humidity.toFloat()), 2, 2);
-        hum.foreground_color = shs::ThemeColors::LIGHT_GREEN;
+
+        shs::IndicatorWidget hum(m_tft, 0, 0, width / 2 - 30, 0,
+            "%", 2, 2, 2, 1, shs::ThemeColors::LIGHT_GREEN);
 
         shs::Widget::setAligned(*m_layers[2], hum, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, temp.y + temp.height + 10);
 
-        hum.tick();
-        
+        hum.draw(shs::t::shs_string_t(data.indoor_humidity.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
+
 
     }
 
+
     // out
     {
-        shs::Label temp(m_tft, static_cast<shs::t::shs_string_t>(data.outdoor_temperature.toFloat()), 2, 2);
-        temp.foreground_color = shs::ThemeColors::MINT;
+        shs::IndicatorWidget temp(m_tft, 0, 0, width / 2 - 30, 0, "C", 2, 2, 2, 1, shs::ThemeColors::MINT);
 
         shs::Widget::setAligned(*m_layers[1], temp, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, 20);
 
-        temp.tick();
+        temp.draw(shs::t::shs_string_t(data.outdoor_temperature.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
 
         // humidity
-        shs::Label hum(m_tft, static_cast<shs::t::shs_string_t>(data.outdoor_humidity.toFloat()), 2, 2);
-        hum.foreground_color = shs::ThemeColors::MINT;
+        shs::IndicatorWidget hum(m_tft, 0, 0, width / 2 - 30, 0, "%", 2, 2, 2, 1, shs::ThemeColors::MINT);
 
         shs::Widget::setAligned(*m_layers[1], hum, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::BOTTOM, 0, 20);
 
-        hum.tick();
+        hum.draw(shs::t::shs_string_t(data.outdoor_humidity.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
     }
 
 
