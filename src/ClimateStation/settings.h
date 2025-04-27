@@ -2,7 +2,7 @@
 
 
 static constexpr auto MHZ19_TX = 17;
-static constexpr auto MHZ19_RX = 16;
+static constexpr auto MHZ19_RX = 35;
 
 static constexpr auto BME280_CACHE_EXPIRATION_TIME = 5000;
 
