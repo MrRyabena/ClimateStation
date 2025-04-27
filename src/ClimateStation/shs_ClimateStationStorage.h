@@ -1,10 +1,16 @@
 #pragma once
 
+#include <Arduino.h>
 
 #include <SPI.h>
 #include <SD.h>
 
 #include "shs_ClimateStation.h"
+#include <shs_ProgramTime.h>
+
+#define DEBUG
+#define SHS_SF_DEBUG
+#include <shs_debug.h>
 
 
 class shs::ClimateStationStorage : public shs::Process
@@ -14,35 +20,44 @@ public:
     enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
 
 
-    ClimateStationStorage(const uint8_t CS, const uint8_t MOSI, const uint8_t MISO, const uint8_t SCK)
-        : m_CS(CS), m_MOSI(MOSI), m_MISO(MISO), m_SCK(SCK), m_spi(VSPI)
-    {}
+    ClimateStationStorage(shs::ClimateStation& climate_station, uint8_t SD_CS);
 
-    bool begin();
+    void start() override;
+    void tick() override;
+    void stop() override;
+
+    bool saveNextData(const shs::ClimateStation::Data& data);
+
+    bool beginSD();
 
     Status getStatus() const { return m_status; }
 
-    void end()
+    void endSD()
     {
         SD.end();
-        m_spi.end();
     }
 
-    String readTest() 
+    String readTest()
     {
-      auto file = SD.open("/test.txt");
-      auto str = file.readString();
-      file.close();
-      return str;
+        auto file = SD.open("/test.txt");
+        auto str = file.readString();
+        file.close();
+        return str;
     }
 
 private:
-    SPIClass m_spi;
 
+    shs::ProgramTime m_save_tmr;
+    static constexpr auto m_SAVE_T = 60'000;                               // every 10 minutes
+    static constexpr auto m_STORAGE_DIR = "/SHS/ClimateStation/storage/";
+
+    shs::ClimateStation& m_climate_station;
     Status m_status;
+    const uint8_t m_SD_CS;
 
-    const uint8_t m_CS;
-    const uint8_t m_MOSI;
-    const uint8_t m_MISO;
-    const uint8_t m_SCK;
+    static void m_z_filled(uint8_t value, char* buf);
+
+    static shs::t::shs_string_t m_getDateFileName(shs::t::shs_time_t time);
+    static void m_checkAndCreateDirectory(const shs::t::shs_string_t& dir_name);
+
 };
