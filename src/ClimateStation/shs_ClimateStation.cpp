@@ -17,14 +17,22 @@ void shs::ClimateStation::start()
     {
         m_ntp->begin(shs::settings::GMT);
 
+        NTP.onError([]() {
+            doutln(NTP.readError());
+            dout("online: ");
+            doutln(NTP.online());
+            });
+
         if (m_rtc) m_ntp->attachRTC(*m_rtc);
+
+
     }
 }
 
 
 void shs::ClimateStation::tick()
 {
-    if (m_rtc) m_rtc->tick();
+    //if (m_rtc) m_rtc->tick();
     if (m_ntp) m_ntp->tick();
 
     if (m_main_tmr.milliseconds() > M_UPDATING_TIMEOUT)
@@ -34,7 +42,11 @@ void shs::ClimateStation::tick()
         m_updateData(data);
 
         m_main_tmr.reset();
+
+
     }
+
+
 }
 
 void shs::ClimateStation::stop()
@@ -73,7 +85,6 @@ void shs::ClimateStation::m_updateData(Data& data)
 
     if (m_bme)
     {
-        doutln(m_bme->getStatus());
         data.pressure = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::PRESSURE_BAR));
         data.indoor_temperature = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::TEMPERATURE));
         data.indoor_humidity = m_bme->getValueFx(shs::etoi(shs::BME280::Metrics::HUMIDITY));
@@ -96,11 +107,34 @@ void shs::ClimateStation::m_updateData(Data& data)
         data.outdoor_humidity = shs::t::shs_fixed_t(0);
     }
 
-    if (m_rtc) data.time = Datime(*m_rtc).getUnix();
-    else if (m_ntp) data.time = m_ntp->getUnix();
-    else data.time = 0;
+    data.time = getTimeUnix();
+
+
+    // dout("ntp time:  "); dout(m_ntp->online()); dout(m_ntp->hasError()); dout(Datime(*m_ntp).valid()); doutln(m_ntp->timeToString());
+    // dout("ds time:   "); dout(m_rtc->isOK()); doutln(m_rtc->getTime().timeToString());
+    // dout("data time: "); doutln(Stamp(data.time).timeToString());
+
 
 }
+
+
+
+uint32_t shs::ClimateStation::getTimeUnix()
+{
+    if (m_rtc) return m_rtc->getTime().getUnix();
+    if (m_ntp) return m_ntp->getUnix();
+
+    return 0;
+}
+
+
+// Datime shs::ClimateStation::getTime()
+// {
+//     if (m_rtc) return m_rtc->getTime();
+//     if (m_ntp) return m_ntp->getTime();
+
+//     return 0;
+// }
 
 
 #ifdef SHS_SF_DEBUG

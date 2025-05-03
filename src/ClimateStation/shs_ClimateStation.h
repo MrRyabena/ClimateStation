@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include <shs_types.h>
+#include <Stamp.h>
 
 #include <shs_lib_MHZ19.h>
 #include <shs_lib_BME280.h>
@@ -22,7 +23,7 @@
 
 #include <WiFi.h>
 
-
+#define SHS_SF_DEBUG
 #include <shs_debug.h>
 
 
@@ -52,7 +53,7 @@ public:
 
     ~ClimateStation() = default;
 
-   
+
     void start() override;
     void tick() override;
     void stop() override;
@@ -73,6 +74,9 @@ public:
     };
 
     Data getData() { Data data; m_updateData(data); return data; }
+
+    uint32_t getTimeUnix();
+  //  Datime getTime();
 
 
 #ifdef SHS_SF_DEBUG
