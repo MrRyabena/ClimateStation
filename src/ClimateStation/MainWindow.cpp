@@ -6,17 +6,17 @@ void shs::MainWindow::start()
 
     // time
     auto block = std::make_shared<shs::RectWidget>(m_tft,
-        0, 0, width / 2 - 20, height / 2 - 20,
+        0, 0, width / 2 - 15, height / 4 - 10,
         8, 2,
         shs::ThemeColors::LIGHT, shs::ThemeColors::BACKGROUND, shs::ThemeColors::LIGHT
     );
 
-    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::TOP, 30, 10);
+    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::VERTICAL_CENTER, 10, -(height / 6) + 10);
 
     // out
 
     block = std::make_shared<shs::RectWidget>(m_tft,
-        0, 0, width / 2 - 20, height / 2 - 15,
+        0, 0, width / 2 - 15, height / 2 - 15,
         8, 2,
         shs::ThemeColors::LIGHT
     );
@@ -32,11 +32,11 @@ void shs::MainWindow::start()
 
     block->attachLayer(text, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, 2);
 
-    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::BOTTOM, 30, 10);
+    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::BOTTOM, 10, 10);
 
     // in
     block = std::make_shared<shs::RectWidget>(m_tft,
-        0, 0, width / 2 - 30, height - 15,
+        0, 0, width / 2 - 15, height - 15,
         8, 2,
         shs::ThemeColors::LIGHT
     );
