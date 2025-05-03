@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <Arduino.h>
 
 #include <SPI.h>
@@ -20,7 +22,7 @@ public:
     enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
 
 
-    ClimateStationStorage(shs::ClimateStation& climate_station, uint8_t SD_CS);
+    ClimateStationStorage(std::shared_ptr<shs::ClimateStation> climate_station, uint8_t SD_CS);
 
     void start() override;
     void tick() override;
@@ -31,6 +33,9 @@ public:
     bool beginSD();
 
     Status getStatus() const { return m_status; }
+
+    bool save_TFT_calData(const uint16_t* calData);
+    [[nodiscard]] bool get_TFT_calData(uint16_t* calData);
 
     void endSD()
     {
@@ -46,12 +51,15 @@ public:
     }
 
 private:
+    friend class shs::ClimateStationVisualizer;
 
     shs::ProgramTime m_save_tmr;
-    static constexpr auto m_SAVE_T = 60'000;                               // every 10 minutes
-    static constexpr auto m_STORAGE_DIR = "/SHS/ClimateStation/storage/";
+    static constexpr auto m_SAVE_T = 300'000;                                    // every 5 minutes
+    static constexpr auto m_STORAGE_DIR = "/SHS/SHS_ClimateStation/storage/";
+    static constexpr auto m_TFT_DATA_DIR = "/SHS/SHS_ClimateStation/TFT_data/";
+    static constexpr auto m_TFT_TOUCH_CALIBRATION_DATA_SIZE = 5;                  // size in uint16_t (10 bytes)
 
-    shs::ClimateStation& m_climate_station;
+    std::shared_ptr<shs::ClimateStation> m_climate_station;
     Status m_status;
     const uint8_t m_SD_CS;
 
