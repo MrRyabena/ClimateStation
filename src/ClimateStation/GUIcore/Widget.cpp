@@ -4,6 +4,40 @@ shs::Widget::Widget(const std::shared_ptr<TFT_eSPI> tft, const shs::t::shs_coord
     : m_tft(tft), x(set_x), y(set_y), width(set_width), height(set_height)
 {}
 
+bool shs::Widget::contain(shs::t::shs_coord_t px, shs::t::shs_coord_t py) const
+{
+    return px >= x && px <= x + width && py >= y && py <= y + height;
+}
+
+void shs::Widget::setPressed(const bool pressed)
+{
+    m_last_pressed = m_pressed;
+    m_pressed = pressed;
+}
+
+bool shs::Widget::checkPressed(const shs::t::shs_coord_t px, const shs::t::shs_coord_t py)
+{
+    auto pressed = contain(px, py);
+    setPressed(pressed);
+
+    return pressed;
+}
+
+bool shs::Widget::isPressed() const
+{
+    return m_pressed;
+}
+
+bool shs::Widget::justPressed() const
+{
+    return m_pressed && !m_last_pressed;
+}
+
+bool shs::Widget::justReleased() const
+{
+    return !m_pressed && m_last_pressed;
+}
+
 
 void shs::Widget::setPosition(const shs::t::shs_coord_t px, const shs::t::shs_coord_t py)
 {

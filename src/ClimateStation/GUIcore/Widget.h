@@ -37,7 +37,13 @@ public:
     );
 
 
-    [[nodiscard]] bool contain(const shs::t::shs_coord_t px, const shs::t::shs_coord_t py) const { return px >= x && px <= x + width && py >= y && py <= y + height; }
+    [[nodiscard]] bool contain(shs::t::shs_coord_t px, shs::t::shs_coord_t py) const;
+    void setPressed(bool pressed);
+    bool checkPressed(shs::t::shs_coord_t px, shs::t::shs_coord_t py);
+    bool isPressed() const;
+    bool justPressed() const;
+    bool justReleased() const;
+
 
     void start() override { for (auto& w : m_layers) w->start(); };
     void tick()  override { for (auto& w : m_layers) w->tick(); };
@@ -63,4 +69,8 @@ public:
 protected:
     std::shared_ptr<TFT_eSPI> m_tft;
     std::vector<std::shared_ptr<shs::Widget>> m_layers;
+
+    // They are not combined in one variable, because of the alignment.
+    bool m_pressed{};
+    bool m_last_pressed{};
 };
