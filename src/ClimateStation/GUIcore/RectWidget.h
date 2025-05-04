@@ -37,6 +37,7 @@ public:
     );
 
 
+    void start() override;
     void tick() override;
 
     void draw();

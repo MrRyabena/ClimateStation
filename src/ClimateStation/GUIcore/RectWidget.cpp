@@ -12,11 +12,18 @@ shs::RectWidget::RectWidget(
 {}
 
 
-void shs::RectWidget::tick()
+void shs::RectWidget::start()
 {
     draw();
+    Widget::start();
+}
+
+
+void shs::RectWidget::tick()
+{
     Widget::tick();
 }
+
 
 void shs::RectWidget::draw()
 {
