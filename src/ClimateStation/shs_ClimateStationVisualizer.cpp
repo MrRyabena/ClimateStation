@@ -3,68 +3,38 @@
 
 shs::ClimateStationVisualizer::ClimateStationVisualizer(std::shared_ptr<shs::ClimateStation> climate_station,
     std::shared_ptr<shs::ClimateStationStorage> storage, std::shared_ptr<TFT_eSPI> m_tft,
-    const uint8_t tft_led_pin
+    const uint8_t tft_led_pin//, std::shared_ptr<microLED> aled
 )
-    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin)
+    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin)//, m_aled(aled)
 {}
 
 void shs::ClimateStationVisualizer::start()
 {
-    enableTFT();
-
     if (!m_tft) return;
 
     m_tft->init();
     m_tft->setRotation(3);
-    m_tft->fillScreen(m_rgb565(shs::ThemeColors::BACKGROUND));
+    m_tft->fillScreen(shs::utils::rgb565(shs::ThemeColors::BACKGROUND));
 
     m_touch_calibrate();
+
+    m_enable_MainWindow();
+
+    enableTFT();
 
 }
 
 void shs::ClimateStationVisualizer::tick()
 {
-    uint16_t x = 0, y = 0; // To store the touch coordinates
-
-    // Pressed will be set true is there is a valid touch on the screen
-    bool pressed = m_tft->getTouch(&x, &y);
-
-    // Draw a white spot at the detected coordinates
-    if (pressed)
-    {
-        m_sleep_tmr.reset();
-        doutln("pressed");
-
-        //tft_ptr->fillCircle(x, y, 2, TFT_WHITE);
-        //Serial.print("x,y = ");
-        //Serial.print(x);
-        //Serial.print(",");
-        //Serial.println(y);
-    }
-
     if (m_sleep_tmr.milliseconds() >= m_SLEEP_TIMEOUT) disableTFT();
     else enableTFT();
 
+    m_touch_tick();
+
     if (m_main_tmr.milliseconds() >= TICK_TIME)
     {
-        // if (m_tft)
-        // {
-        //     m_tft->fillScreen(m_rgb565(0x00, 0x12, 0x19));
-
-        //     auto data = m_cls->getData();
-
-        //     String str = String("CO2:                  ") + data.CO2; m_tft->drawString(str, 20, 48, 2);
-        //     str = String("pressure:             ") + static_cast<float>(data.pressure); m_tft->drawString(str, 20, 63, 2);
-        //     str = String("indoor_temperature:   ") + static_cast<float>(data.indoor_temperature); m_tft->drawString(str, 20, 76, 2);
-        //     str = String("outdoor_temperature:  ") + static_cast<float>(data.outdoor_temperature); m_tft->drawString(str, 20, 104, 2);
-        //     str = String("indoor_humidity:      ") + static_cast<float>(data.indoor_humidity); m_tft->drawString(str, 20, 132, 2);
-        //     str = String("outdoor_humidity:     ") + static_cast<float>(data.outdoor_humidity); m_tft->drawString(str, 20, 160, 2);
-        //     str = String("time:                 ") + data.time; m_tft->drawString(str, 20, 188, 2);
-
-
-        // }
-
         m_main_tmr.reset();
+        if (m_main_window) m_main_window->tick();
     }
 }
 
@@ -128,5 +98,93 @@ void shs::ClimateStationVisualizer::m_touch_calibrate()
     m_tft->println("Calibration complete!");
 
     delay(4000);
+}
+
+void shs::ClimateStationVisualizer::m_touch_tick()
+{
+    // Pressed will be set true is there is a valid touch on the screen
+    if (m_tft->getTouch(&m_touch_x, &m_touch_y))
+    {
+        m_sleep_tmr.reset();
+
+        if (m_button_tmr.milliseconds() > m_BUTTON_TIMEOUT && m_tft_enabled)
+        {
+            m_button_tmr.reset();
+
+            if (m_main_window)
+            {
+
+                auto i = 0;
+                for (auto& x : m_main_window->buttons)
+                {
+                    x->checkPressed(m_touch_x, m_touch_y);
+                    if (x->isPressed())
+                    {
+                        switch (i)
+                        {
+                            case 0: m_enable_ChartWindow(); return; break;                  // chart
+                            case 1: break;                                          // info
+                            case 2: break;                                          // settings
+                            default: break;
+                        }
+                    }
+                    i++;
+                }
+            }
+
+            else if (m_chart_window)
+            {
+                auto i = 0;
+                for (auto& x : m_chart_window->buttons)
+                {
+                    x->checkPressed(m_touch_x, m_touch_y);
+                    if (x->isPressed())
+                    {
+                        switch (i)
+                        {
+                            case 0: m_enable_MainWindow(); return; break;                   // main window
+
+                            default: break;
+                        }
+                    }
+                    i++;
+                }
+            }
+        }
+
+
+    }
+}
+
+
+void shs::ClimateStationVisualizer::m_enable_MainWindow()
+{
+    m_disable_ChartWindow();
+
+    m_main_window = std::make_shared<shs::MainWindow>(m_tft, m_cls, m_storage);
+    m_main_window->start();
+    m_main_window->tick();
+}
+
+
+void shs::ClimateStationVisualizer::m_disable_MainWindow()
+{
+    if (m_main_window) m_main_window = nullptr;
+}
+
+void shs::ClimateStationVisualizer::m_enable_ChartWindow()
+{
+    m_disable_MainWindow();
+
+    m_chart_window = std::make_shared<shs::ChartWindow>(m_tft, m_storage);
+    m_chart_window->attachLayer(
+        std::make_shared<shs::Image>(m_storage, F("/SHS/SHS_ClimateStation/images/logo-mint.shsf"), m_tft, 0, 0, 220, 220),
+        shs::Widget::Align::VERTICAL_CENTER | shs::Widget::Align::HORIZONTAL_CENTER);
+    m_chart_window->start();
+}
+
+void shs::ClimateStationVisualizer::m_disable_ChartWindow()
+{
+    if (m_chart_window) m_chart_window = nullptr;
 }
 
