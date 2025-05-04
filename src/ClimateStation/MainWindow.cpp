@@ -4,6 +4,8 @@ void shs::MainWindow::start()
 {
     Widget::start();
 
+    m_tft->fillScreen(shs::utils::rgb565(shs::ThemeColors::BACKGROUND));
+
     // time
     auto block = std::make_shared<shs::RectWidget>(m_tft,
         0, 0, width / 2 - 15, height / 4 - 10,
@@ -52,12 +54,31 @@ void shs::MainWindow::start()
 
     attachLayer(block, shs::Widget::Align::RIGHT | shs::Widget::Align::VERTICAL_CENTER, 10, 0);
 
+
+    // buttons
+    // chart
+    block = std::make_shared<shs::RectWidget>(m_tft, 0, 0, m_BUTTON_SIZE, m_BUTTON_SIZE, 8, 2);
+    block->attachLayer(std::make_shared<shs::Image>(m_storage, F("chart_icon_30.shsf"), m_tft), shs::Widget::Align::CENTER);
+    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::TOP, 10, 10);
+    buttons.push_back(block);
+
+    block = std::make_shared<shs::RectWidget>(m_tft, 0, 0, m_BUTTON_SIZE, m_BUTTON_SIZE, 8, 2);
+    block->attachLayer(std::make_shared<shs::Image>(m_storage, F("info_icon_30.shsf"), m_tft), shs::Widget::Align::CENTER);
+    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::TOP, 10 + m_BUTTON_SIZE + 10, 10);
+    buttons.push_back(block);
+
+    block = std::make_shared<shs::RectWidget>(m_tft, 0, 0, m_BUTTON_SIZE, m_BUTTON_SIZE, 8, 2);
+    block->attachLayer(std::make_shared<shs::Image>(m_storage, F("settings_icon_30.shsf"), m_tft), shs::Widget::Align::CENTER);
+    attachLayer(block, shs::Widget::Align::LEFT | shs::Widget::Align::TOP, (10 + m_BUTTON_SIZE) * 2 + 10, 10);
+    buttons.push_back(block);
+
+    Widget::start();
 }
 
 
 void shs::MainWindow::tick()
 {
-    Widget::tick();
+    if (m_cls) updateData(m_cls->getData());
 }
 
 
@@ -135,7 +156,5 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
 
         hum.draw(shs::t::shs_string_t(data.outdoor_humidity.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
     }
-
-
 }
 
