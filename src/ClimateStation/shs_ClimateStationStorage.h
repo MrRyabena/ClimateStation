@@ -42,6 +42,9 @@ public:
         SD.end();
     }
 
+    [[nodiscard]] size_t readFile(const shs::t::shs_string_t& fname, uint8_t* buf, size_t size);
+    [[nodiscard]] size_t writeFile(const shs::t::shs_string_t& fname, const uint8_t* buf, size_t size);
+
     String readTest()
     {
         auto file = SD.open("/test.txt");

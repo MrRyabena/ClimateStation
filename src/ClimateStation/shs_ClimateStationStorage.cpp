@@ -98,6 +98,32 @@ bool shs::ClimateStationStorage::get_TFT_calData(uint16_t* calData)
 }
 
 
+size_t shs::ClimateStationStorage::readFile(const shs::t::shs_string_t& fname, uint8_t* buf, const size_t size)
+{
+    auto file = SD.open(fname, FILE_READ);
+    if (!file) return 0;
+
+    auto bytes = file.read(buf, size);
+    file.close();
+
+    return bytes;
+}
+
+
+size_t shs::ClimateStationStorage::writeFile(const shs::t::shs_string_t& fname, const uint8_t* buf, const size_t size)
+{
+    m_checkAndCreateDirectory(fname.substring(0, fname.lastIndexOf('/')));
+    auto file = SD.open(fname, FILE_WRITE);
+    if (!file) return 0;
+
+    auto bytes = file.write(buf, size);
+    file.close();
+
+    return bytes;
+}
+
+
+
 shs::t::shs_string_t shs::ClimateStationStorage::m_getDateFileName(const shs::t::shs_time_t time)
 {
     Datime datime(time);
