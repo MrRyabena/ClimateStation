@@ -23,8 +23,8 @@ class shs::Image : public shs::Widget
 public:
     Image(std::shared_ptr<shs::ClimateStationStorage> storage, const shs::t::shs_string_t& fname,
         std::shared_ptr<TFT_eSPI> tft,
-        shs::t::shs_coord_t set_x, shs::t::shs_coord_t set_y,
-        shs::t::shs_coord_t set_width, shs::t::shs_coord_t set_height);
+        shs::t::shs_coord_t set_x = 0, shs::t::shs_coord_t set_y = 0,
+        shs::t::shs_coord_t set_width = 0, shs::t::shs_coord_t set_height = 0);
 
     void loadImage();
     void drawImage(bool clear_buffer = true);
