@@ -56,7 +56,6 @@ void shs::Widget::attachLayer(std::shared_ptr<shs::Widget> ptr, const uint8_t al
     if (!ptr) return;
 
     auto coords = getAligned(*this, *ptr, align, horizontal_margin, vertical_margin);
-    dout(coords.first); doutln(coords.second);
 
     ptr->setPosition(coords.first, coords.second);
 

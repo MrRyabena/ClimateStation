@@ -22,7 +22,7 @@ class shs::Widget : public shs::Process
 {
 public:
 
-    enum Align : uint8_t { LEFT = 0b1, HORIZONTAL_CENTER = 0b10, RIGHT = 0b100, TOP = 0b1000, VERTICAL_CENTER = 0b10000, BOTTOM = 0b100000 };
+    enum Align : uint8_t { LEFT = 0b1, HORIZONTAL_CENTER = 0b10, RIGHT = 0b100, TOP = 0b1000, VERTICAL_CENTER = 0b10000, BOTTOM = 0b100000, CENTER = 0b10010 };
 
     shs::t::shs_coord_t x;
     shs::t::shs_coord_t y;
@@ -51,7 +51,6 @@ public:
 
     void setPosition(const shs::t::shs_coord_t px, const shs::t::shs_coord_t py);
 
-    void attachLayer(std::shared_ptr<shs::Widget> ptr) { if (ptr) m_layers.push_back(ptr); }
     void attachLayer(std::shared_ptr<shs::Widget> ptr,
         const uint8_t align = 0,
         const shs::t::shs_coord_t horizontal_margin = 0, const shs::t::shs_coord_t vertical_margin = 0
