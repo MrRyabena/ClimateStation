@@ -16,7 +16,7 @@
 
 
 #include <shs_Process.h>
-#include <shs_ProgramTime.h>
+#include <shs_ProgramTimer.h>
 
 #include <shs_settings_private.h>
 #include <shs_utils.h>
@@ -26,11 +26,13 @@
 #define SHS_SF_DEBUG
 #include <shs_debug.h>
 
+#include "shs_ClimateStationConfig.h"
+#include "shs_ClimateStationStorage.h"
+
 
 namespace shs
 {
     class ClimateStation;
-    class ClimateStationStorage;
     class ClimateStationVisualizer;
 }
 
@@ -42,7 +44,16 @@ class shs::ClimateStation : public shs::Process
     friend class shs::ClimateStationStorage;
 
 public:
+    using Data = shs::ClimateStationData;
+
+    enum class SensorsNumbers : uint8_t
+    {
+        MHZ19_b = 0b1, BME280_b = 0b10, DHT_b = 0b100,
+        DS3231_b = 0b1000, NTP_b = 0b10000, UPDATING_TIMEOUT_b = 0b100000,
+    };
+
     explicit ClimateStation(
+        std::shared_ptr<shs::ClimateStationStorage> storage,
         std::shared_ptr<shs::MHZ19> mhz19 = nullptr,
         std::shared_ptr<shs::BME280> bme = nullptr,
         std::shared_ptr<shs::DHT> dht = nullptr,
@@ -58,25 +69,9 @@ public:
     void tick() override;
     void stop() override;
 
-    struct Data
-    {
-        uint16_t CO2{};
-
-        shs::t::shs_fixed_t pressure;
-
-        shs::t::shs_fixed_t indoor_temperature;
-        shs::t::shs_fixed_t outdoor_temperature;
-
-        shs::t::shs_fixed_t indoor_humidity;
-        shs::t::shs_fixed_t outdoor_humidity;
-
-        shs::t::shs_time_t time;
-    };
-
     Data getData() { Data data; m_updateData(data); return data; }
 
     uint32_t getTimeUnix();
-  //  Datime getTime();
 
 
 #ifdef SHS_SF_DEBUG
@@ -85,7 +80,7 @@ public:
 #endif
 
 protected:
-    enum M_SensorsNumbers { MHZ19_b = 0b1, BME280_b = 0b10, DHT_b = 0b100, UPDATING_TIMEOUT_b = 0b1000 };
+    std::shared_ptr<shs::ClimateStationStorage> m_storage;
 
     std::shared_ptr<shs::MHZ19> m_mhz19;
     std::shared_ptr<shs::BME280> m_bme;
@@ -94,11 +89,12 @@ protected:
     std::shared_ptr<GyverDS3231> m_rtc;
     std::shared_ptr<GyverNTP> m_ntp;
 
-    static constexpr auto M_SENS_UPDATING_TIMEOUT = 2000u;
-    static constexpr auto M_UPDATING_TIMEOUT = 5000u;
+    static constexpr auto m_SENS_UPDATING_TIMEOUT = 2000u;
+    static constexpr auto m_UPDATING_TIMEOUT = 5000u;
 
-    shs::ProgramTime m_main_tmr;
-    shs::ProgramTime m_sens_updating_tmr;
+    shs::ProgramTimer m_main_tmr;
+    shs::ProgramTimer m_sens_updating_tmr;
+    shs::ProgramTimer m_save_tmr;
 
     void m_updateSensors();
     uint8_t m_allSensUpdated();
