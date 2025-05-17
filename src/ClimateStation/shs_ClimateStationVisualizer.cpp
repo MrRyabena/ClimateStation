@@ -3,14 +3,19 @@
 
 shs::ClimateStationVisualizer::ClimateStationVisualizer(std::shared_ptr<shs::ClimateStation> climate_station,
     std::shared_ptr<shs::ClimateStationStorage> storage, std::shared_ptr<TFT_eSPI> m_tft,
-    const uint8_t tft_led_pin//, std::shared_ptr<microLED> aled
+    const uint8_t tft_led_pin, const uint16_t leds_num, const shs::t::shs_pin_t leds_pin
 )
-    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin)//, m_aled(aled)
+    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin)
 {}
+
 
 void shs::ClimateStationVisualizer::start()
 {
-    if (!m_tft) return;
+    FastLED.clear();
+    FastLED.show();
+    FastLED.setBrightness(20);
+    //FastLED.showColor(0xffff00);
+
 
     m_tft->init();
     m_tft->setRotation(3);
@@ -24,6 +29,7 @@ void shs::ClimateStationVisualizer::start()
 
 }
 
+
 void shs::ClimateStationVisualizer::tick()
 {
     if (m_sleep_tmr.milliseconds() >= m_SLEEP_TIMEOUT) disableTFT();
@@ -35,13 +41,16 @@ void shs::ClimateStationVisualizer::tick()
     {
         m_main_tmr.reset();
         if (m_main_window) m_main_window->tick();
+        m_updateLED();
     }
 }
+
 
 void shs::ClimateStationVisualizer::printDebug(const String& str, const uint16_t x, const uint16_t y)
 {
     if (m_tft) m_tft->drawString(str, x, y, 2);
 }
+
 
 void shs::ClimateStationVisualizer::enableTFT()
 {
@@ -54,6 +63,7 @@ void shs::ClimateStationVisualizer::enableTFT()
     }
 }
 
+
 void shs::ClimateStationVisualizer::disableTFT()
 {
 
@@ -62,6 +72,16 @@ void shs::ClimateStationVisualizer::disableTFT()
         pinMode(m_tft_LED_pin, INPUT);
         m_tft_enabled = false;
     }
+}
+
+
+void shs::ClimateStationVisualizer::m_updateLED()
+{
+    auto data = m_cls->getData();
+    int hue = map(data.CO2, M_MIN_CO2, M_MAX_CO2, M_MIN_COLOR_H, M_MAX_COLOR_H);
+    hue = constrain(hue, M_MIN_COLOR_H, M_MAX_COLOR_H);
+    
+    FastLED.showColor(static_cast<CRGB>(CHSV(hue, 255, 255)));    
 }
 
 
@@ -99,6 +119,7 @@ void shs::ClimateStationVisualizer::m_touch_calibrate()
 
     delay(4000);
 }
+
 
 void shs::ClimateStationVisualizer::m_touch_tick()
 {
@@ -172,6 +193,7 @@ void shs::ClimateStationVisualizer::m_disable_MainWindow()
     if (m_main_window) m_main_window = nullptr;
 }
 
+
 void shs::ClimateStationVisualizer::m_enable_ChartWindow()
 {
     m_disable_MainWindow();
@@ -182,6 +204,7 @@ void shs::ClimateStationVisualizer::m_enable_ChartWindow()
         shs::Widget::Align::VERTICAL_CENTER | shs::Widget::Align::HORIZONTAL_CENTER);
     m_chart_window->start();
 }
+
 
 void shs::ClimateStationVisualizer::m_disable_ChartWindow()
 {

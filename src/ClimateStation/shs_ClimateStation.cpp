@@ -10,6 +10,7 @@ void shs::ClimateStation::start()
 {
     if (m_mhz19) m_mhz19->setup();
     if (m_bme) m_bme->setup();
+    if (m_dht) m_dht->setup();
 
     setStampZone(shs::settings::GMT);
     if (m_rtc) m_rtc->begin();
@@ -42,11 +43,7 @@ void shs::ClimateStation::tick()
         m_updateData(data);
 
         m_main_tmr.reset();
-
-
     }
-
-
 }
 
 void shs::ClimateStation::stop()

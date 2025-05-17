@@ -2,16 +2,19 @@
 
 
 #include <memory>
+#include <vector>
 #include <stdint.h>
 #include <Arduino.h>
 
 #include <SPI.h>
 #include <TFT_eSPI.h>       // https://github.com/Bodmer/TFT_eSPI
 
-// #include <microLED.h>       // https://github.com/GyverLibs/microLED
+#include <FastLED.h>
 
 #include <shs_Process.h>
 #include <shs_ProgramTime.h>
+#include <shs_ProgramTimer.h>
+#include <shs_types.h>
 
 #include "shs_ClimateStation.h"
 #include "shs_ClimateStationStorage.h"
@@ -30,9 +33,11 @@ public:
     ClimateStationVisualizer(
         std::shared_ptr<shs::ClimateStation> climate_station,
         std::shared_ptr<shs::ClimateStationStorage> storage,
-        std::shared_ptr<TFT_eSPI> tft, uint8_t tft_led_pin//,
-        // std::shared_ptr<microLED> aled
+        std::shared_ptr<TFT_eSPI> tft, uint8_t tft_led_pin,
+        uint16_t leds_num, shs::t::shs_pin_t leds_pin
     );
+
+    ~ClimateStationVisualizer() = default;
 
 
     void start() override;
@@ -51,7 +56,6 @@ protected:
     std::shared_ptr<shs::ClimateStation> m_cls;
     std::shared_ptr<shs::ClimateStationStorage> m_storage;
 
-    // std::shared_ptr<microLED> m_aled;
 
     std::shared_ptr<shs::MainWindow> m_main_window;
     std::shared_ptr<shs::ChartWindow> m_chart_window;
@@ -66,6 +70,14 @@ protected:
 
     static constexpr auto m_SLEEP_TIMEOUT = 120'000;     // 2 minutes
     static constexpr auto m_BUTTON_TIMEOUT = 200;        // 200 milliseconds
+
+
+    static constexpr auto M_MIN_CO2 = 400u;
+    static constexpr auto M_MAX_CO2 = 2200u;
+    static constexpr auto M_MIN_COLOR_H = HUE_RED;
+    static constexpr auto M_MAX_COLOR_H = HUE_GREEN;
+
+    void m_updateLED();
 
     const uint8_t m_tft_LED_pin;
     bool m_tft_enabled{};
