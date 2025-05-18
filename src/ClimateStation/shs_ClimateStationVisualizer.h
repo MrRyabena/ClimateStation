@@ -76,6 +76,7 @@ protected:
     void m_updateLED();
     void m_enableLED();
     void m_disableLED();
+    uint8_t m_led_hue{};
 
     const uint8_t m_tft_LED_pin;
 

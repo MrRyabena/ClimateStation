@@ -7,7 +7,7 @@ shs::ClimateStationVisualizer::ClimateStationVisualizer(std::shared_ptr<shs::Cli
 )
     : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin),
     m_main_tmr(m_TICK_TIMEOUT), m_sleep_tmr(storage->cs_config.SLEEP_TIMEOUT), m_button_tmr(m_BUTTON_TIMEOUT),
-    m_led_tmr(storage->cs_config.LED_TIMEOUT), m_smoothing_tmr(100)
+    m_led_tmr(storage->cs_config.LED_TIMEOUT), m_smoothing_tmr(60)
 {}
 
 
@@ -15,7 +15,8 @@ void shs::ClimateStationVisualizer::start()
 {
     FastLED.clear();
     FastLED.show();
-    FastLED.setBrightness(m_storage->cs_config.LED_BRIGHTNESS);
+    FastLED.setBrightness(0);
+    m_updateLED();
 
 
     m_tft->init();
@@ -81,9 +82,9 @@ void shs::ClimateStationVisualizer::m_updateLED()
 {
     auto data = m_cls->getData();
     int hue = map(data.CO2, m_storage->cs_config.MIN_CO2, m_storage->cs_config.MAX_CO2, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
-    hue = constrain(hue, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
+    m_led_hue = constrain(hue, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
 
-    FastLED.showColor(static_cast<CRGB>(CHSV(hue, 255, 255)));
+    FastLED.showColor(static_cast<CRGB>(CHSV(m_led_hue, 255, 255)));
 }
 
 void shs::ClimateStationVisualizer::m_enableLED()
@@ -91,8 +92,16 @@ void shs::ClimateStationVisualizer::m_enableLED()
     if (m_smoothing_tmr.check())
     {
         auto brightness = FastLED.getBrightness();
-        if (brightness < m_storage->cs_config.LED_BRIGHTNESS) FastLED.setBrightness(++brightness);
-        else if (brightness > m_storage->cs_config.LED_BRIGHTNESS) FastLED.setBrightness(--brightness);
+        if (brightness < m_storage->cs_config.LED_BRIGHTNESS)
+        {
+            FastLED.setBrightness(brightness + 1);
+            FastLED.showColor(static_cast<CRGB>(CHSV(m_led_hue, 255, 255)));
+        }
+        else if (brightness > m_storage->cs_config.LED_BRIGHTNESS)
+        {
+            FastLED.setBrightness(brightness - 1);
+            FastLED.showColor(static_cast<CRGB>(CHSV(m_led_hue, 255, 255)));
+        }
     }
 }
 
@@ -102,7 +111,12 @@ void shs::ClimateStationVisualizer::m_disableLED()
     if (m_smoothing_tmr.check())
     {
         auto brightness = FastLED.getBrightness();
-        if (brightness) FastLED.setBrightness(--brightness);
+        if (brightness)
+        {
+            FastLED.setBrightness(brightness - 1);
+            FastLED.showColor(static_cast<CRGB>(CHSV(m_led_hue, 255, 255)));
+        }
+
     }
 }
 
@@ -218,7 +232,7 @@ void shs::ClimateStationVisualizer::m_enable_ChartWindow()
 {
     m_disable_MainWindow();
 
-    m_chart_window = std::make_shared<shs::ChartWindow>(m_tft, m_storage);
+    m_chart_window = std::make_shared<shs::ChartWindow>(m_tft, m_cls, m_storage);
     m_chart_window->attachLayer(
         std::make_shared<shs::Image>(m_storage, F("/SHS/SHS_ClimateStation/images/logo-mint.shsf"), m_tft, 0, 0, 220, 220),
         shs::Widget::Align::VERTICAL_CENTER | shs::Widget::Align::HORIZONTAL_CENTER);
