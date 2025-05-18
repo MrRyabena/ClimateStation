@@ -1,5 +1,7 @@
 #pragma once
 
+// #define DEBUG
+
 static constexpr auto LEDS_NUM = 9 * 5;
 static constexpr auto LEDS_PIN = 16;
 
