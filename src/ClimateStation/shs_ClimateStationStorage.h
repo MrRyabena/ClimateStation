@@ -3,32 +3,41 @@
 #include <memory>
 
 #include <Arduino.h>
+#include <Stamp.h>
 
 #include <SPI.h>
 #include <SD.h>
 
-#include "shs_ClimateStation.h"
-#include <shs_ProgramTime.h>
+#include <shs_ProgramTimer.h>
+#include <shs_Process.h>
 
-#define DEBUG
-#define SHS_SF_DEBUG
-#include <shs_debug.h>
+#include "shs_ClimateStationData.h"
+#include "shs_ClimateStationConfig.h"
+
+
+namespace shs
+{
+    class ClimateStationStorage;
+}
 
 
 class shs::ClimateStationStorage : public shs::Process
 {
 public:
 
+    shs::ClimateStationConfig cs_config;
+
     enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
 
 
-    ClimateStationStorage(std::shared_ptr<shs::ClimateStation> climate_station, uint8_t SD_CS);
+    ClimateStationStorage(uint8_t SD_CS);
+
 
     void start() override;
     void tick() override;
     void stop() override;
 
-    bool saveNextData(const shs::ClimateStation::Data& data);
+    bool saveNextData(const shs::ClimateStationData& data);
 
     bool beginSD();
 
@@ -36,6 +45,9 @@ public:
 
     bool save_TFT_calData(const uint16_t* calData);
     [[nodiscard]] bool get_TFT_calData(uint16_t* calData);
+
+    bool saveConfig(const shs::ClimateStationConfig& config);
+    bool getConfig(shs::ClimateStationConfig& config);
 
     void endSD()
     {
@@ -54,15 +66,11 @@ public:
     }
 
 private:
-    friend class shs::ClimateStationVisualizer;
-
-    shs::ProgramTime m_save_tmr;
-    static constexpr auto m_SAVE_T = 300'000;                                    // every 5 minutes
+    static constexpr auto m_CONFIG_FILE = "/SHS/SHS_ClimateStation/config/config.shsf";
     static constexpr auto m_STORAGE_DIR = "/SHS/SHS_ClimateStation/storage/";
     static constexpr auto m_TFT_DATA_DIR = "/SHS/SHS_ClimateStation/TFT_data/";
     static constexpr auto m_TFT_TOUCH_CALIBRATION_DATA_SIZE = 5;                  // size in uint16_t (10 bytes)
 
-    std::shared_ptr<shs::ClimateStation> m_climate_station;
     Status m_status;
     const uint8_t m_SD_CS;
 
@@ -70,5 +78,4 @@ private:
 
     static shs::t::shs_string_t m_getDateFileName(shs::t::shs_time_t time);
     static void m_checkAndCreateDirectory(const shs::t::shs_string_t& dir_name);
-
 };
