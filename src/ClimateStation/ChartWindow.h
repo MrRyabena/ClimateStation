@@ -10,7 +10,13 @@
 #include "GUIcore/shs_ThemeColors.h"
 #include "GUIcore/IndicatorWidget.h"
 
+#include "CO2_chart.h"
+
 #include "shs_ClimateStation.h"
+
+#define SHS_SF_DEBUG
+#define DEBUG
+#include <shs_debug.h>
 
 #include "Image.h"
 
@@ -24,7 +30,7 @@ namespace shs
 class shs::ChartWindow : public shs::Widget
 {
 public:
-    ChartWindow(std::shared_ptr<TFT_eSPI> tft, std::shared_ptr<shs::ClimateStationStorage> storage);
+    ChartWindow(std::shared_ptr<TFT_eSPI> tft, std::shared_ptr<shs::ClimateStation> climate_station, std::shared_ptr<shs::ClimateStationStorage> storage);
 
     void start() override;
     void tick()override;
@@ -34,4 +40,5 @@ public:
 protected:
     static constexpr auto m_BUTTON_SIZE = 40;
     std::shared_ptr<shs::ClimateStationStorage> m_storage;
+    std::shared_ptr<shs::ClimateStation> m_climate_station;
 };
