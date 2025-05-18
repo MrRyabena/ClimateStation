@@ -14,7 +14,7 @@ namespace shs
 struct shs::ClimateStationConfig
 {
     // ----------------------------------INFO-----------------------------------
-    shs::version::Version config_version = "v1.0.0";
+    shs::version::Version config_version = "v1.1.0";
 
     // ---------------------------------SENSORS---------------------------------
 
@@ -40,12 +40,14 @@ struct shs::ClimateStationConfig
 
     uint32_t SLEEP_TIMEOUT = 120'000;      // 2 minutes
 
-    uint32_t SAVE_TIMEOUT = 300'000;           // every 5 minutes
+    uint32_t SAVE_TIMEOUT = 300'000;       // every 5 minutes
 
     // Backlight (LED)
+    uint32_t LED_TIMEOUT = 120'000;        // 2 minutes
     uint16_t MIN_CO2 = 400u;
     uint16_t MAX_CO2 = 2200u;
     uint8_t  MIN_COLOR_H = 0;              // red
     uint8_t  MAX_COLOR_H = 90;             // green
+    uint8_t  LED_BRIGHTNESS = 40;
 
 };
