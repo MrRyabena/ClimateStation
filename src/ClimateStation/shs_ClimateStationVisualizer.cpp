@@ -5,7 +5,9 @@ shs::ClimateStationVisualizer::ClimateStationVisualizer(std::shared_ptr<shs::Cli
     std::shared_ptr<shs::ClimateStationStorage> storage, std::shared_ptr<TFT_eSPI> m_tft,
     const uint8_t tft_led_pin, const uint16_t leds_num, const shs::t::shs_pin_t leds_pin
 )
-    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin)
+    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin),
+    m_main_tmr(m_TICK_TIMEOUT), m_sleep_tmr(storage->cs_config.SLEEP_TIMEOUT), m_button_tmr(m_BUTTON_TIMEOUT),
+    m_led_tmr(storage->cs_config.LED_TIMEOUT), m_smoothing_tmr(100)
 {}
 
 
@@ -13,8 +15,7 @@ void shs::ClimateStationVisualizer::start()
 {
     FastLED.clear();
     FastLED.show();
-    FastLED.setBrightness(20);
-    //FastLED.showColor(0xffff00);
+    FastLED.setBrightness(m_storage->cs_config.LED_BRIGHTNESS);
 
 
     m_tft->init();
@@ -32,16 +33,17 @@ void shs::ClimateStationVisualizer::start()
 
 void shs::ClimateStationVisualizer::tick()
 {
-    if (m_sleep_tmr.milliseconds() >= m_SLEEP_TIMEOUT) disableTFT();
+    if (m_sleep_tmr.milliseconds() >= m_storage->cs_config.SLEEP_TIMEOUT) disableTFT();  //m_storage->cs_config.SLEEP_TIMEOUT
     else enableTFT();
+    if (m_led_tmr.milliseconds() >= m_storage->cs_config.LED_TIMEOUT) m_disableLED();
+    else m_enableLED();
 
     m_touch_tick();
 
-    if (m_main_tmr.milliseconds() >= TICK_TIME)
+    if (m_main_tmr.check())
     {
-        m_main_tmr.reset();
-        if (m_main_window) m_main_window->tick();
         m_updateLED();
+        if (m_main_window) m_main_window->tick();
     }
 }
 
@@ -78,16 +80,35 @@ void shs::ClimateStationVisualizer::disableTFT()
 void shs::ClimateStationVisualizer::m_updateLED()
 {
     auto data = m_cls->getData();
-    int hue = map(data.CO2, M_MIN_CO2, M_MAX_CO2, M_MIN_COLOR_H, M_MAX_COLOR_H);
-    hue = constrain(hue, M_MIN_COLOR_H, M_MAX_COLOR_H);
-    
-    FastLED.showColor(static_cast<CRGB>(CHSV(hue, 255, 255)));    
+    int hue = map(data.CO2, m_storage->cs_config.MIN_CO2, m_storage->cs_config.MAX_CO2, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
+    hue = constrain(hue, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
+
+    FastLED.showColor(static_cast<CRGB>(CHSV(hue, 255, 255)));
+}
+
+void shs::ClimateStationVisualizer::m_enableLED()
+{
+    if (m_smoothing_tmr.check())
+    {
+        auto brightness = FastLED.getBrightness();
+        if (brightness < m_storage->cs_config.LED_BRIGHTNESS) FastLED.setBrightness(++brightness);
+        else if (brightness > m_storage->cs_config.LED_BRIGHTNESS) FastLED.setBrightness(--brightness);
+    }
 }
 
 
+void shs::ClimateStationVisualizer::m_disableLED()
+{
+    if (m_smoothing_tmr.check())
+    {
+        auto brightness = FastLED.getBrightness();
+        if (brightness) FastLED.setBrightness(--brightness);
+    }
+}
+
 void shs::ClimateStationVisualizer::m_touch_calibrate()
 {
-    uint16_t calData[shs::ClimateStationStorage::m_TFT_TOUCH_CALIBRATION_DATA_SIZE];
+    uint16_t calData[m_TFT_TOUCH_CALIBRATION_DATA_SIZE];
 
     if (m_storage->get_TFT_calData(calData))
     {
@@ -127,11 +148,10 @@ void shs::ClimateStationVisualizer::m_touch_tick()
     if (m_tft->getTouch(&m_touch_x, &m_touch_y))
     {
         m_sleep_tmr.reset();
+        m_led_tmr.reset();
 
-        if (m_button_tmr.milliseconds() > m_BUTTON_TIMEOUT && m_tft_enabled)
+        if (m_button_tmr.check() && m_tft_enabled)
         {
-            m_button_tmr.reset();
-
             if (m_main_window)
             {
 

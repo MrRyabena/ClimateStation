@@ -28,8 +28,6 @@
 class shs::ClimateStationVisualizer : public shs::Process
 {
 public:
-    static constexpr auto TICK_TIME = 10'000;
-
     ClimateStationVisualizer(
         std::shared_ptr<shs::ClimateStation> climate_station,
         std::shared_ptr<shs::ClimateStationStorage> storage,
@@ -64,23 +62,25 @@ protected:
     uint16_t m_touch_x{};
     uint16_t m_touch_y{};
 
-    shs::ProgramTime m_main_tmr;
-    shs::ProgramTime m_sleep_tmr;
-    shs::ProgramTime m_button_tmr;
-
-    static constexpr auto m_SLEEP_TIMEOUT = 120'000;     // 2 minutes
-    static constexpr auto m_BUTTON_TIMEOUT = 200;        // 200 milliseconds
+    static constexpr auto m_TICK_TIMEOUT = 10'000;        // 10 seconds
+    static constexpr auto m_BUTTON_TIMEOUT = 200;         // 200 milliseconds
+    static constexpr auto m_TFT_TOUCH_CALIBRATION_DATA_SIZE = 5;
 
 
-    static constexpr auto M_MIN_CO2 = 400u;
-    static constexpr auto M_MAX_CO2 = 2200u;
-    static constexpr auto M_MIN_COLOR_H = HUE_RED;
-    static constexpr auto M_MAX_COLOR_H = HUE_GREEN;
+    shs::ProgramTimer m_main_tmr;
+    shs::ProgramTimer m_sleep_tmr;
+    shs::ProgramTimer m_led_tmr;
+    shs::ProgramTimer m_smoothing_tmr;
+    shs::ProgramTimer m_button_tmr;
 
     void m_updateLED();
+    void m_enableLED();
+    void m_disableLED();
 
     const uint8_t m_tft_LED_pin;
+
     bool m_tft_enabled{};
+
 
     void m_touch_calibrate();
     void m_touch_tick();
