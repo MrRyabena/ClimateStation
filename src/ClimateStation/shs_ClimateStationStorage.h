@@ -15,6 +15,7 @@
 #include "shs_ClimateStationConfig.h"
 
 
+
 namespace shs
 {
     class ClimateStationStorage;
@@ -65,6 +66,8 @@ public:
         return str;
     }
 
+    static shs::t::shs_string_t m_getDateFileName(shs::t::shs_time_t time);
+
 private:
     static constexpr auto m_CONFIG_FILE = "/SHS/SHS_ClimateStation/config/config.shsf";
     static constexpr auto m_STORAGE_DIR = "/SHS/SHS_ClimateStation/storage/";
@@ -76,6 +79,6 @@ private:
 
     static void m_z_filled(uint8_t value, char* buf);
 
-    static shs::t::shs_string_t m_getDateFileName(shs::t::shs_time_t time);
+
     static void m_checkAndCreateDirectory(const shs::t::shs_string_t& dir_name);
 };
