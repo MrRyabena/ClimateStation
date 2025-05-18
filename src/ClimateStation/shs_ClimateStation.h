@@ -23,9 +23,6 @@
 
 #include <WiFi.h>
 
-#define SHS_SF_DEBUG
-#include <shs_debug.h>
-
 #include "shs_ClimateStationConfig.h"
 #include "shs_ClimateStationStorage.h"
 
