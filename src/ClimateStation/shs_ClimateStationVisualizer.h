@@ -15,13 +15,18 @@
 #include <shs_ProgramTime.h>
 #include <shs_ProgramTimer.h>
 #include <shs_types.h>
+#include <shs_ControlWiFi.h>
 
 #include "shs_ClimateStation.h"
 #include "shs_ClimateStationStorage.h"
+#include "shs_ClimateStationStatistics.h"
 
 #include "MainWindow.h"
 #include "ChartWindow.h"
 #include "SettingsWindow.h"
+#include "PortalWindow.h"
+
+
 #include "GUIcore/shs_ThemeColors.h"
 #include "GUIcore/utils.h"
 
@@ -54,11 +59,13 @@ protected:
 
     std::shared_ptr<shs::ClimateStation> m_cls;
     std::shared_ptr<shs::ClimateStationStorage> m_storage;
+    std::shared_ptr<shs::ClimateStationStatistics> m_statistics;
 
 
     std::shared_ptr<shs::MainWindow> m_main_window;
     std::shared_ptr<shs::ChartWindow> m_chart_window;
     std::shared_ptr<shs::SettingsWindow> m_settings_window;
+    std::shared_ptr<shs::PortalWindow> m_portal_window;
 
     // To store the touch coordinates
     uint16_t m_touch_x{};
@@ -96,6 +103,9 @@ protected:
 
     void m_enable_SettingsWindow();
     void m_disable_SettingsWindow();
+
+    void m_enable_PortalWindow();
+    void m_disable_PortalWindow();
 
     void m_all_disable();
 };

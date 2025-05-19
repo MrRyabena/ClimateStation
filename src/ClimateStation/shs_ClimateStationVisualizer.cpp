@@ -5,7 +5,8 @@ shs::ClimateStationVisualizer::ClimateStationVisualizer(std::shared_ptr<shs::Cli
     std::shared_ptr<shs::ClimateStationStorage> storage, std::shared_ptr<TFT_eSPI> m_tft,
     const uint8_t tft_led_pin, const uint16_t leds_num, const shs::t::shs_pin_t leds_pin
 )
-    : m_cls(climate_station), m_storage(storage), m_tft(m_tft), m_tft_LED_pin(tft_led_pin),
+    : m_cls(climate_station), m_storage(storage), m_statistics(std::make_shared<shs::ClimateStationStatistics>(climate_station, storage)),
+    m_tft(m_tft), m_tft_LED_pin(tft_led_pin),
     m_main_tmr(m_TICK_TIMEOUT), m_sleep_tmr(storage->cs_config.SLEEP_TIMEOUT), m_button_tmr(m_BUTTON_TIMEOUT),
     m_led_tmr(storage->cs_config.LED_TIMEOUT), m_smoothing_tmr(60)
 {}
@@ -28,12 +29,15 @@ void shs::ClimateStationVisualizer::start()
     m_enable_MainWindow();
 
     enableTFT();
+    m_statistics->start();
 
 }
 
 
 void shs::ClimateStationVisualizer::tick()
 {
+    m_statistics->tick();
+
     if (m_sleep_tmr.milliseconds() >= m_storage->cs_config.SLEEP_TIMEOUT) disableTFT();  //m_storage->cs_config.SLEEP_TIMEOUT
     else enableTFT();
     if (m_led_tmr.milliseconds() >= m_storage->cs_config.LED_TIMEOUT) m_disableLED();
@@ -230,6 +234,26 @@ void shs::ClimateStationVisualizer::m_touch_tick()
                     i++;
                 }
             }
+            else if (m_portal_window)
+            {
+
+                auto i = 0;
+                for (auto& x : m_portal_window->buttons)
+                {
+                    x->checkPressed(m_touch_x, m_touch_y);
+                    if (x->isPressed())
+                    {
+                        switch (i)
+                        {
+                            case 0: m_enable_MainWindow(); return; break;
+                            case 2: m_enable_PortalWindow(); return; break;     // main window
+
+                            default: break;
+                        }
+                    }
+                    i++;
+                }
+            }
         }
 
 
@@ -241,7 +265,7 @@ void shs::ClimateStationVisualizer::m_enable_MainWindow()
 {
     m_all_disable();
 
-    m_main_window = std::make_shared<shs::MainWindow>(m_tft, m_cls, m_storage);
+    m_main_window = std::make_shared<shs::MainWindow>(m_tft, m_cls, m_storage, m_statistics);
     m_main_window->start();
     m_main_window->tick();
 }
@@ -267,6 +291,7 @@ void shs::ClimateStationVisualizer::m_disable_ChartWindow()
     if (m_chart_window) m_chart_window = nullptr;
 }
 
+
 void shs::ClimateStationVisualizer::m_enable_SettingsWindow()
 {
     m_all_disable();
@@ -274,15 +299,31 @@ void shs::ClimateStationVisualizer::m_enable_SettingsWindow()
     m_settings_window->start();
 }
 
+
 void shs::ClimateStationVisualizer::m_disable_SettingsWindow()
 {
     if (m_settings_window) m_settings_window = nullptr;
 }
+
+
+void shs::ClimateStationVisualizer::m_enable_PortalWindow()
+{
+    m_all_disable();
+    m_portal_window = std::make_shared<shs::PortalWindow>(m_tft, m_cls, m_storage);
+    m_portal_window->start();
+}
+
+void shs::ClimateStationVisualizer::m_disable_PortalWindow()
+{
+    if (m_portal_window) m_portal_window = nullptr;
+}
+
 
 void shs::ClimateStationVisualizer::m_all_disable()
 {
     m_disable_MainWindow();
     m_disable_ChartWindow();
     m_disable_SettingsWindow();
+    m_disable_PortalWindow();
 }
 
