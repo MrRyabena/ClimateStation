@@ -14,8 +14,6 @@
 
 #include "shs_ClimateStation.h"
 
-#define SHS_SF_DEBUG
-#define DEBUG
 #include <shs_debug.h>
 
 #include "Image.h"
@@ -33,8 +31,7 @@ public:
     ChartWindow(std::shared_ptr<TFT_eSPI> tft, std::shared_ptr<shs::ClimateStation> climate_station, std::shared_ptr<shs::ClimateStationStorage> storage);
 
     void start() override;
-    void tick()override;
-
+    
     std::vector<std::shared_ptr<shs::Widget>> buttons;
 
 protected:
