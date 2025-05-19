@@ -12,6 +12,7 @@
 
 #include "shs_ClimateStation.h"
 #include "shs_ClimateStationStorage.h"
+#include "shs_ClimateStationStatistics.h"
 #include "Image.h"
 
 #define DEBUG
@@ -27,8 +28,9 @@ namespace shs
 class shs::MainWindow : public shs::Widget
 {
 public:
-    MainWindow(std::shared_ptr<TFT_eSPI> tft, std::shared_ptr<shs::ClimateStation> climate_station, std::shared_ptr<shs::ClimateStationStorage> storage)
-        : Widget(tft, 0, 0, 320, 240), m_cls(climate_station), m_storage(storage)
+    MainWindow(std::shared_ptr<TFT_eSPI> tft, std::shared_ptr<shs::ClimateStation> climate_station,
+        std::shared_ptr<shs::ClimateStationStorage> storage, std::shared_ptr<shs::ClimateStationStatistics> statistics)
+        : Widget(tft, 0, 0, 320, 240), m_cls(climate_station), m_storage(storage), m_statistics(statistics)
     {}
 
     void start() override;
@@ -42,4 +44,5 @@ protected:
     static constexpr auto m_BUTTON_SIZE = 40;
     std::shared_ptr<shs::ClimateStation> m_cls;
     std::shared_ptr<shs::ClimateStationStorage> m_storage;
+    std::shared_ptr<shs::ClimateStationStatistics> m_statistics;
 };

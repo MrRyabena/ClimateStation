@@ -105,7 +105,20 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
 
         shs::Widget::setAligned(*m_layers[2], co2, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, 20);
 
-        co2.draw(shs::t::shs_string_t(data.CO2), shs::IndicatorWidget::ValueTrend::INCREASING);
+        auto co2_trend = m_statistics->getTrend(shs::ClimateStationMetrics::CO2);
+        shs::t::shs_color_t co2_color{};
+
+        switch (co2_trend)
+        {
+            case shs::IndicatorWidget::ValueTrend::INCREASING: co2_color = 0xff0000; break;
+            case shs::IndicatorWidget::ValueTrend::DECREASING: co2_color = 0x00ff00; break;
+
+            case shs::IndicatorWidget::ValueTrend::CONST: [[fallthrough]];
+            default:co2_color = 0xffff00;
+                break;
+        }
+
+        co2.draw(shs::t::shs_string_t(data.CO2), co2_trend, co2_color);
 
 
         // pressure
@@ -116,7 +129,7 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
 
         shs::Widget::setAligned(*m_layers[2], pressure, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, co2.y + co2.height + 10);
 
-        pressure.draw(shs::t::shs_string_t(pressureToMmHg(data.pressure), 1), shs::IndicatorWidget::ValueTrend::CONST);
+        pressure.draw(shs::t::shs_string_t(pressureToMmHg(data.pressure), 1), m_statistics->getTrend(shs::ClimateStationMetrics::PRESSURE), shs::ThemeColors::LIGHT);
 
 
         // temperature
@@ -126,7 +139,7 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
 
         shs::Widget::setAligned(*m_layers[2], temp, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, pressure.y + pressure.height + 10);
 
-        temp.draw(shs::t::shs_string_t(data.indoor_temperature.toFloat(), 1), shs::IndicatorWidget::ValueTrend::DECREASING);
+        temp.draw(shs::t::shs_string_t(data.indoor_temperature.toFloat(), 1), m_statistics->getTrend(shs::ClimateStationMetrics::IN_TEMP), shs::ThemeColors::LIGHT);
 
         // humidity
 
@@ -135,7 +148,7 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
 
         shs::Widget::setAligned(*m_layers[2], hum, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, temp.y + temp.height + 10);
 
-        hum.draw(shs::t::shs_string_t(data.indoor_humidity.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
+        hum.draw(shs::t::shs_string_t(data.indoor_humidity.toFloat(), 1), m_statistics->getTrend(shs::ClimateStationMetrics::IN_HUM), shs::ThemeColors::LIGHT);
 
 
     }
@@ -147,14 +160,14 @@ void shs::MainWindow::updateData(const shs::ClimateStation::Data& data)
 
         shs::Widget::setAligned(*m_layers[1], temp, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::TOP, 0, 20);
 
-        temp.draw(shs::t::shs_string_t(data.outdoor_temperature.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
+        temp.draw(shs::t::shs_string_t(data.outdoor_temperature.toFloat(), 1), m_statistics->getTrend(shs::ClimateStationMetrics::OUT_TEMP), shs::ThemeColors::LIGHT);
 
         // humidity
         shs::IndicatorWidget hum(m_tft, 0, 0, width / 2 - 30, 0, "%", 2, 2, 2, 1, shs::ThemeColors::MINT);
 
         shs::Widget::setAligned(*m_layers[1], hum, shs::Widget::Align::HORIZONTAL_CENTER | shs::Widget::Align::BOTTOM, 0, 20);
 
-        hum.draw(shs::t::shs_string_t(data.outdoor_humidity.toFloat(), 1), shs::IndicatorWidget::ValueTrend::CONST);
+        hum.draw(shs::t::shs_string_t(data.outdoor_humidity.toFloat(), 1), m_statistics->getTrend(shs::ClimateStationMetrics::OUT_HUM), shs::ThemeColors::LIGHT);
     }
 }
 
