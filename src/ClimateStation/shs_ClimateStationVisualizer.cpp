@@ -178,8 +178,8 @@ void shs::ClimateStationVisualizer::m_touch_tick()
                         switch (i)
                         {
                             case 0: m_enable_ChartWindow(); return; break;                  // chart
-                            case 1: break;                                          // info
-                            case 2: break;                                          // settings
+                            case 1: break;                                                  // info
+                            case 2: m_enable_SettingsWindow(); break;                       // settings
                             default: break;
                         }
                     }
@@ -189,6 +189,7 @@ void shs::ClimateStationVisualizer::m_touch_tick()
 
             else if (m_chart_window)
             {
+
                 auto i = 0;
                 for (auto& x : m_chart_window->buttons)
                 {
@@ -206,19 +207,28 @@ void shs::ClimateStationVisualizer::m_touch_tick()
                 }
             }
             else if (m_settings_window)
-                auto i = 0;
-            for (auto& x : m_settings_window->buttons)
             {
-                x->checkPressed(m_touch_x, m_touch_y)
+                m_settings_window->tick();
+                auto i = 0;
+                for (auto& x : m_settings_window->buttons)
+                {
+                    x->checkPressed(m_touch_x, m_touch_y);
                     if (x->isPressed())
                     {
                         switch (i)
                         {
-                            case 0: m_enable_MainWindow(); return; break;
+                            case 0:
+                                {
+                                    // if (m_settings_window()->configChanged()) m_storage->saveConfig(m_storage->cs_config);
+                                    m_enable_MainWindow();
+                                    return;
+                                }
+                                break;
                             default: break;
                         }
                     }
-                i++;
+                    i++;
+                }
             }
         }
 
