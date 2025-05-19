@@ -1,7 +1,7 @@
 {
     "name": "ClimateStation",
     "about": "A weather station for monitoring and visualizing the indoor and outdoor microclimate.",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "notes": "Fixed a bug in SHS inscription image.",
     "builds": [
         {
