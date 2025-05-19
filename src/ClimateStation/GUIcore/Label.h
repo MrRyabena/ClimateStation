@@ -44,7 +44,6 @@ public:
     void setText(const shs::t::shs_string_t& str) { m_text = str; start(); }
     const shs::t::shs_string_t& getText() { return m_text; }
 
-    void start() override;
     void tick() override;
 
 protected:

@@ -30,12 +30,6 @@ shs::Label::Label(
 }
 
 
-
-
-void shs::Label::start()
-{}
-
-
 void shs::Label::tick()
 {
     if (!m_tft) return;
@@ -57,7 +51,7 @@ void shs::Label::tick()
             frame_color, background_color
         );
 
-        frame.tick();
+        frame.draw();
 
         auto coords = shs::Widget::getAligned(frame, shs::Widget(m_tft, 0, 0, text_width, text_height), text_align);
 
