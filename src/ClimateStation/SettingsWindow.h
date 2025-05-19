@@ -5,11 +5,13 @@
 
 #include <TFT_eSPI.h>
 
+#include <shs_ControlWiFi.h>
+
 #include "GUIcore/Widget.h"
 #include "GUIcore/Label.h"
+#include "Image.h"
 #include "GUIcore/RectWidget.h"
 #include "GUIcore/shs_ThemeColors.h"
-#include "GUIcore/IndicatorWidget.h"
 #include "GUIcore/ValueControl.h"
 
 #include "CO2_chart.h"
@@ -18,7 +20,7 @@
 
 #include <shs_debug.h>
 
-#include "Image.h"
+
 
 namespace shs
 {
