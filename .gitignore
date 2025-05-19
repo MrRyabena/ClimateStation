@@ -611,3 +611,6 @@ FodyWeavers.xsd
 .vscode/settings.json
 .vscode/tasks.json
 *.mtl
+
+!**/bin/
+!**/bin/**
