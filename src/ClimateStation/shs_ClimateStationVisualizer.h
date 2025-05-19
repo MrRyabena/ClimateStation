@@ -21,6 +21,7 @@
 
 #include "MainWindow.h"
 #include "ChartWindow.h"
+#include "SettingsWindow.h"
 #include "GUIcore/shs_ThemeColors.h"
 #include "GUIcore/utils.h"
 
@@ -57,6 +58,7 @@ protected:
 
     std::shared_ptr<shs::MainWindow> m_main_window;
     std::shared_ptr<shs::ChartWindow> m_chart_window;
+    std::shared_ptr<shs::SettingsWindow> m_settings_window;
 
     // To store the touch coordinates
     uint16_t m_touch_x{};
@@ -91,4 +93,9 @@ protected:
 
     void m_enable_ChartWindow();
     void m_disable_ChartWindow();
+
+    void m_enable_SettingsWindow();
+    void m_disable_SettingsWindow();
+
+    void m_all_disable();
 };

@@ -205,6 +205,21 @@ void shs::ClimateStationVisualizer::m_touch_tick()
                     i++;
                 }
             }
+            else if (m_settings_window)
+                auto i = 0;
+            for (auto& x : m_settings_window->buttons)
+            {
+                x->checkPressed(m_touch_x, m_touch_y)
+                    if (x->isPressed())
+                    {
+                        switch (i)
+                        {
+                            case 0: m_enable_MainWindow(); return; break;
+                            default: break;
+                        }
+                    }
+                i++;
+            }
         }
 
 
@@ -214,7 +229,7 @@ void shs::ClimateStationVisualizer::m_touch_tick()
 
 void shs::ClimateStationVisualizer::m_enable_MainWindow()
 {
-    m_disable_ChartWindow();
+    m_all_disable();
 
     m_main_window = std::make_shared<shs::MainWindow>(m_tft, m_cls, m_storage);
     m_main_window->start();
@@ -230,12 +245,9 @@ void shs::ClimateStationVisualizer::m_disable_MainWindow()
 
 void shs::ClimateStationVisualizer::m_enable_ChartWindow()
 {
-    m_disable_MainWindow();
+    m_all_disable();
 
     m_chart_window = std::make_shared<shs::ChartWindow>(m_tft, m_cls, m_storage);
-    m_chart_window->attachLayer(
-        std::make_shared<shs::Image>(m_storage, F("/SHS/SHS_ClimateStation/images/logo-mint.shsf"), m_tft, 0, 0, 220, 220),
-        shs::Widget::Align::VERTICAL_CENTER | shs::Widget::Align::HORIZONTAL_CENTER);
     m_chart_window->start();
 }
 
@@ -243,5 +255,24 @@ void shs::ClimateStationVisualizer::m_enable_ChartWindow()
 void shs::ClimateStationVisualizer::m_disable_ChartWindow()
 {
     if (m_chart_window) m_chart_window = nullptr;
+}
+
+void shs::ClimateStationVisualizer::m_enable_SettingsWindow()
+{
+    m_all_disable();
+    m_settings_window = std::make_shared<shs::SettingsWindow>(m_tft, m_cls, m_storage);
+    m_settings_window->start();
+}
+
+void shs::ClimateStationVisualizer::m_disable_SettingsWindow()
+{
+    if (m_settings_window) m_settings_window = nullptr;
+}
+
+void shs::ClimateStationVisualizer::m_all_disable()
+{
+    m_disable_MainWindow();
+    m_disable_ChartWindow();
+    m_disable_SettingsWindow();
 }
 
