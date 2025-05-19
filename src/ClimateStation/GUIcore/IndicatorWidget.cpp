@@ -38,7 +38,7 @@ shs::IndicatorWidget::IndicatorWidget(std::shared_ptr<TFT_eSPI> tft,
 }
 
 
-void shs::IndicatorWidget::draw(const shs::t::shs_string_t& value, const ValueTrend trend)
+void shs::IndicatorWidget::draw(const shs::t::shs_string_t& value, const ValueTrend trend, const shs::t::shs_color_t color)
 {
     if (!m_tft) return;
 
@@ -59,7 +59,7 @@ void shs::IndicatorWidget::draw(const shs::t::shs_string_t& value, const ValueTr
     shs::Widget value_widget(m_tft, 0, 0, value_width, height);
     shs::Widget::setAligned(*this, value_widget, value_align, value_horizontal_margin, value_vertical_margin);
 
-    drawArrow(value_widget, trend);
+    drawArrow(value_widget, trend, color);
 
     value_widget.x += value_widget.height / 2 + value_horizontal_margin;
 
@@ -95,7 +95,7 @@ void shs::IndicatorWidget::setUnit(const shs::t::shs_string_t& unit)
 }
 
 
-void shs::IndicatorWidget::drawArrow(const shs::Widget& base, const ValueTrend trend)
+void shs::IndicatorWidget::drawArrow(const shs::Widget& base, const ValueTrend trend, const shs::t::shs_color_t color)
 {
     if (!m_tft) return;
 
@@ -116,7 +116,7 @@ void shs::IndicatorWidget::drawArrow(const shs::Widget& base, const ValueTrend t
                     y0,                                                   // y2
                     base.x + h,                                           // x3
                     y0 - h,                                               // y3
-                    TFT_GREEN);
+                    color ? shs::utils::rgb565(color) : TFT_GREEN);
             }
             break;
         case ValueTrend::DECREASING:
@@ -130,7 +130,7 @@ void shs::IndicatorWidget::drawArrow(const shs::Widget& base, const ValueTrend t
                     y0 - h,                                               // y2
                     base.x + h,                                           // x3
                     y0,                                                   // y3 
-                    TFT_RED);
+                    color ? shs::utils::rgb565(color) : TFT_RED);
             }
             break;
         case ValueTrend::CONST:
@@ -145,7 +145,7 @@ void shs::IndicatorWidget::drawArrow(const shs::Widget& base, const ValueTrend t
                     y0 + a,                                               // y2
                     x0 + h,                                               // x3
                     y0 + h,                                               // y3
-                    TFT_YELLOW);
+                    color ? shs::utils::rgb565(color) : TFT_YELLOW);
             }
             break;
         default:
