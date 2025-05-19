@@ -1,7 +1,7 @@
 {
     "name": "ClimateStation",
     "about": "A weather station for monitoring and visualizing the indoor and outdoor microclimate.",
-    "version": "0.1.1",
+    "version": "1.0.1",
     "notes": "First version.",
     "builds": [
         {
