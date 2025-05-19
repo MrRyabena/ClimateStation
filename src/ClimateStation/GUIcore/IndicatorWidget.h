@@ -57,11 +57,11 @@ public:
     );
 
 
-    void draw(const shs::t::shs_string_t& value, ValueTrend trend);
+    void draw(const shs::t::shs_string_t& value, ValueTrend trend, shs::t::shs_color_t color = 0);
 
     void setUnit(const shs::t::shs_string_t& unit);
 
-    void drawArrow(const shs::Widget& base, ValueTrend trend);
+    void drawArrow(const shs::Widget& base, ValueTrend trend, shs::t::shs_color_t color = 0);
 
 protected:
     shs::t::shs_string_t m_unit;
