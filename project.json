@@ -8,7 +8,7 @@
             "chipFamily": "ESP32",
 
                     "parts": [
-                               { "path": "", "offset": 65536 }
+                               { "path": "https://raw.githubusercontent.com/MrRyabena/ClimateStation/main/src/firmwares/esp32/bin/ClimateStation.ino.bin", "offset": 65536 }
                             ]
         }
     ]
