@@ -1,8 +1,8 @@
 {
     "name": "ClimateStation",
     "about": "A weather station for monitoring and visualizing the indoor and outdoor microclimate.",
-    "version": "1.0.1",
-    "notes": "First version.",
+    "version": "1.0.2",
+    "notes": "Pre release version.",
     "builds": [
         {
             "chipFamily": "ESP32",
