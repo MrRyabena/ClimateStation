@@ -1,8 +1,8 @@
 {
     "name": "ClimateStation",
     "about": "A weather station for monitoring and visualizing the indoor and outdoor microclimate.",
-    "version": "1.0.5",
-    "notes": "Switching on at high co2 levels. Improved settings interface.",
+    "version": "1.0.6",
+    "notes": "Fixed a bug in settings interface.",
     "builds": [
         {
             "chipFamily": "ESP32",
