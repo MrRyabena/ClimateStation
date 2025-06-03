@@ -69,7 +69,7 @@ public:
     static shs::t::shs_string_t m_getDateFileName(shs::t::shs_time_t time);
 
 private:
-    static constexpr auto m_CONFIG_FILE = "/SHS/SHS_ClimateStation/config/config.shsf";
+    static constexpr auto m_CONFIG_FILE = "/SHS/SHS_ClimateStation/config/";
     static constexpr auto m_STORAGE_DIR = "/SHS/SHS_ClimateStation/storage/";
     static constexpr auto m_TFT_DATA_DIR = "/SHS/SHS_ClimateStation/TFT_data/";
     static constexpr auto m_TFT_TOUCH_CALIBRATION_DATA_SIZE = 5;                  // size in uint16_t (10 bytes)

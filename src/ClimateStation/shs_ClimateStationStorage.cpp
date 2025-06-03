@@ -94,22 +94,23 @@ bool shs::ClimateStationStorage::get_TFT_calData(uint16_t* calData)
 
 bool shs::ClimateStationStorage::saveConfig(const shs::ClimateStationConfig& config)
 {
-    return writeFile(m_CONFIG_FILE, reinterpret_cast<const uint8_t*>(&config), sizeof(config));
+    m_checkAndCreateDirectory(m_CONFIG_FILE);
+    return writeFile(shs::t::shs_string_t(m_CONFIG_FILE) + "config.shsf", reinterpret_cast<const uint8_t*>(&config), sizeof(config));
 }
 
 
 bool shs::ClimateStationStorage::getConfig(shs::ClimateStationConfig& config)
 {
-    if (SD.exists(m_CONFIG_FILE))
+    if (SD.exists(shs::t::shs_string_t(m_CONFIG_FILE) + "config.shsf"))
     {
-        shs::ClimateStationConfig conf;
-        readFile(m_CONFIG_FILE, reinterpret_cast<uint8_t*>(&conf), sizeof(conf));
+        // shs::ClimateStationConfig conf;
+        readFile(shs::t::shs_string_t(m_CONFIG_FILE) + "config.shsf", reinterpret_cast<uint8_t*>(&config), sizeof(config));
 
-        if (conf.config_version == config.config_version)
-        {
-            config = conf;
-            return true;
-        }
+        // if (conf.config_version == config.config_version)
+        // {
+        //     config = conf;
+        //     return true;
+        // }
     }
 
     saveConfig(config);
