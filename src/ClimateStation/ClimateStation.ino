@@ -2,7 +2,7 @@
 
 #include <shs_settings_private.h>
 
-#include <shs_debug.h>
+#include <shs_ProgramTimer.h>
 
 #include <memory>
 
@@ -12,7 +12,7 @@
 #include "shs_ClimateStationConfig.h"
 #include "ClimateStationGUIcore.h"
 #include "shs_SDCard.h"
-#include "MainWindow.h"
+#include "UpdateWindow.h"
 
 #include <SPI.h>
 #include <TFT_eSPI.h>       // https://github.com/Bodmer/TFT_eSPI
@@ -29,14 +29,14 @@ std::shared_ptr<shs::ClimateStationStorage> storage;
 std::shared_ptr<shs::ClimateStation> climate_station;
 std::shared_ptr<shs::ClimateStationVisualizer> climate_station_visualizer;
 
-#include <shs_debug.h>
 
 CRGB leds[LEDS_NUM]{};
 
+#include <AutoOTA.h>
+void checkUpdate();
+
 void setup()
 {
-        dinit();
-        doutln("start");
     // WiFi
     shs::ControlWiFi::connectWiFi();
 
@@ -66,7 +66,9 @@ void setup()
 
     climate_station_visualizer->start();
 
-    doutln("ok");
+    checkUpdate();
+
+    climate_station_visualizer->enable();
 }
 
 
@@ -76,4 +78,11 @@ void loop()
     storage->tick();
     climate_station->tick();
     climate_station_visualizer->tick();
+}
+
+
+void checkUpdate()
+{
+    shs::UpdateWindow window(tft_ptr, CLIMATE_STATION_ESP32_VERSION);
+    window.start();
 }
