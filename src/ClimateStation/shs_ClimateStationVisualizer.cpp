@@ -26,11 +26,11 @@ void shs::ClimateStationVisualizer::start()
 
     m_touch_calibrate();
 
-    m_enable_MainWindow();
-
     enableTFT();
     m_statistics->start();
 
+    shs::FirstWindow fw(m_tft, m_storage);
+    fw.start();    
 }
 
 
@@ -38,9 +38,9 @@ void shs::ClimateStationVisualizer::tick()
 {
     m_statistics->tick();
 
-    if (m_sleep_tmr.milliseconds() >= m_storage->cs_config.SLEEP_TIMEOUT) disableTFT();  //m_storage->cs_config.SLEEP_TIMEOUT
+    if (m_sleep_tmr.milliseconds() >= m_storage->cs_config.SLEEP_TIMEOUT && m_co2_flag == false) disableTFT();  //m_storage->cs_config.SLEEP_TIMEOUT
     else enableTFT();
-    if (m_led_tmr.milliseconds() >= m_storage->cs_config.LED_TIMEOUT) m_disableLED();
+    if (m_led_tmr.milliseconds() >= m_storage->cs_config.LED_TIMEOUT && m_co2_flag == false) m_disableLED();
     else m_enableLED();
 
     m_touch_tick();
@@ -49,6 +49,9 @@ void shs::ClimateStationVisualizer::tick()
     {
         m_updateLED();
         if (m_main_window) m_main_window->tick();
+
+        if (m_cls->getData().CO2 > 1700) m_co2_flag = true;
+        else m_co2_flag = false;
     }
 }
 
@@ -223,7 +226,7 @@ void shs::ClimateStationVisualizer::m_touch_tick()
                         {
                             case 0:
                                 {
-                                    // if (m_settings_window()->configChanged()) m_storage->saveConfig(m_storage->cs_config);
+                                    if (m_settings_window->configChanged()) m_storage->saveConfig(m_storage->cs_config);
                                     m_enable_MainWindow();
                                     return;
                                 }
