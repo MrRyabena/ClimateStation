@@ -81,15 +81,19 @@ void shs::SettingsWindow::tick()
     }
 
 
-    if (m_vc[1]->value != m_storage->cs_config.SLEEP_TIMEOUT)
+    if (m_vc[1]->value != m_storage->cs_config.SLEEP_TIMEOUT && m_vc[1]->value != 0)
     {
+        if (m_vc[1]->value > 10) m_vc[1]->incr = 10;
+        else m_vc[1]->incr = 1;
         m_storage->cs_config.SLEEP_TIMEOUT = m_vc[1]->value * 1000 * 60;
         m_config_changed = true;
     }
 
 
-    if (m_vc[2]->value != m_storage->cs_config.LED_TIMEOUT)
+    if (m_vc[2]->value != m_storage->cs_config.LED_TIMEOUT && m_vc[2]->value != 0)
     {
+        if (m_vc[2]->value > 10) m_vc[2]->incr = 10;
+        else m_vc[2]->incr = 1;
         m_storage->cs_config.LED_TIMEOUT = m_vc[2]->value * 1000 * 60;
         m_config_changed = true;
     }

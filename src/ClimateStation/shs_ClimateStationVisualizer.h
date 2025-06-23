@@ -21,10 +21,13 @@
 #include "shs_ClimateStationStorage.h"
 #include "shs_ClimateStationStatistics.h"
 
+#include "FirstWindow.h"
 #include "MainWindow.h"
 #include "ChartWindow.h"
 #include "SettingsWindow.h"
 #include "PortalWindow.h"
+
+#include "Image.h"
 
 
 #include "GUIcore/shs_ThemeColors.h"
@@ -47,6 +50,8 @@ public:
     void start() override;
     void tick() override;
     void stop() override {}
+
+    void enable() { m_enable_MainWindow(); }
 
     void printDebug(const String& str, const uint16_t x, const uint16_t y);
 
@@ -88,6 +93,8 @@ protected:
     uint8_t m_led_hue{};
 
     const uint8_t m_tft_LED_pin;
+
+    bool m_co2_flag;
 
     bool m_tft_enabled{};
 

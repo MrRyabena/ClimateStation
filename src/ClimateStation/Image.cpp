@@ -5,7 +5,7 @@ shs::Image::Image(std::shared_ptr<shs::ClimateStationStorage> storage, const shs
 {
     uint32_t size{};
     auto res = m_storage->readFile(m_fname, reinterpret_cast<uint8_t*>(&size), sizeof(size));
-    if (res) { width = size >> 16; height = size & 0xffff; }
+    if (res && (width == 0 || height == 0)) { width = size >> 16; height = size & 0xffff; }
 }
 
 
