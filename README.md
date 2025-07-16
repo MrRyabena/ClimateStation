@@ -2,7 +2,7 @@
 
 ---
 
-[<img src="https://github.com/MrRyabena/SmartHomeSystem/blob/v2.X.X/SHSlogos/SVG/SHS_inscr-light_mint.svg" width="90"/>](https://github.com/MrRyabena/SmartHomeSystem)
+[<img src="https://github.com/MrRyabena/SmartHomeSystem/blob/main/SHSlogos/PNG/SHS_inscr-light_mint.png" height="20"/>](https://github.com/MrRyabena/SmartHomeSystem)
 [![Static Badge](https://img.shields.io/badge/Telegram-dev%20blog-blue)](https://t.me/SmartHomeSystem_dev)
 
 ---
@@ -35,6 +35,13 @@ ClimateStation by SmartHomeSystem
   - Визуальный контроль качества воздуха или изменения погодных условий
 - Сбор и сохранение статистики
   - Вывод графиков за выбранные промежутки времени
+
+## PCB
+Для сборки устройства разработана печатная палата.
+
+[![schematic_ClimateStation_v1.1.0.svg](schemes/PCB/schematic_ClimateStation_v1.1.0.svg)](schemes/PCB/schematic_ClimateStation_v1.1.0.svg)
+[![schemes/PCB/PCB_TopSide.svg](schemes/PCB/PCB_TopSide.svg)](schemes/PCB/PCB_TopSide.svg)
+[![schemes/PCB/PBC_BottomSide.svg](schemes/PCB/PBC_BottomSide.svg)](schemes/PCB/PBC_BottomSide.svg)
 
 ## Упаковка
 
