@@ -1,4 +1,4 @@
-# ClimateStation
+![ClimateStation_logo](logos/PNG/CS_inscr-mint.png)
 
 ---
 
@@ -7,10 +7,32 @@
 
 ---
 
-ClimateStation by SmartHomeSystem
+<img src="schemes/images/CS_front_1.jpg" alt="ClimateStation_photo" height="150"/>
+<img src="schemes/images/CS_front_4.jpg" alt="ClimateStation_photo" height="150"/>
+<img src="schemes/images/CS_back_1.jpg" alt="ClimateStation_photo" height="150"/>
+<img src="schemes/images/CS_front_off_1.jpg" alt="ClimateStation_photo" height="150">
+<img src="schemes/images/CS_sensor_2.jpg" alt="ClimateStation_photo" height="150"/>
+
+---
+
+# ClimateStation by SmartHomeSystem
 
 > [!NOTE]
 > Проект является одним из устройств SmartHomeSystem. Внутри кода используется ядро и библиотека основного проекта — **_[SmartHomeSystem](https://github.com/MrRyabena/SmartHomeSystem)_**.</br>
+
+## Versions
+
+<details>
+<summary>v1.0.0 — development beta-version.</summary>
+
+
+</details>
+
+<details>
+<summary>v1.1.0 — <b><code>[current]</code></b>
+
+
+</details>
 
 ## Components
 
