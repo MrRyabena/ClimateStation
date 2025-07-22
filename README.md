@@ -7,11 +7,8 @@
 
 ---
 
-<img src="schemes/images/CS_front_1.jpg" alt="ClimateStation_photo" height="150"/>
-<img src="schemes/images/CS_front_4.jpg" alt="ClimateStation_photo" height="150"/>
-<img src="schemes/images/CS_back_1.jpg" alt="ClimateStation_photo" height="150"/>
-<img src="schemes/images/CS_front_off_1.jpg" alt="ClimateStation_photo" height="150">
-<img src="schemes/images/CS_sensor_2.jpg" alt="ClimateStation_photo" height="150"/>
+<img src="schemes/images/CS_front_1.jpg" alt="ClimateStation_photo" height="150"/> <img src="schemes/images/CS_front_4.jpg" alt="ClimateStation_photo" height="150"/> <img src="schemes/images/CS_back_1.jpg" alt="ClimateStation_photo" height="150"/> <img src="schemes/images/CS_front_off_1.jpg" alt="ClimateStation_photo" height="150"> <img src="schemes/images/CS_sensor_2.jpg" alt="ClimateStation_photo" height="150"/>
+
 
 ---
 
