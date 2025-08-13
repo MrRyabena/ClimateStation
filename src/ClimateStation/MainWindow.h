@@ -15,9 +15,6 @@
 #include "shs_ClimateStationStatistics.h"
 #include "Image.h"
 
-#define DEBUG
-#define SHS_SF_DEBUG
-#include <shs_debug.h>
 
 namespace shs
 {
