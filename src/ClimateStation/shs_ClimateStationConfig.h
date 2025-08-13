@@ -23,7 +23,7 @@ struct shs::ClimateStationConfig
     shs::t::shs_pin_t MHZ19_RX_PIN = 35;
 
     // DHT
-    shs::t::shs_pin_t DHT_PIN = 1;
+    shs::t::shs_pin_t DHT_PIN = 3;
 
     // flags
     /*
@@ -31,7 +31,7 @@ struct shs::ClimateStationConfig
        MHZ19_b = 0b1, BME280_b = 0b10, DHT_b = 0b100,
        DS3231_b = 0b1000, NTP_b = 0b10000, UPDATING_TIMEOUT_b = 0b100000,
     */
-    uint8_t sensors_flags = 0b11111;
+    uint8_t sensors_flags = 0b11110;
 
     // -------------------------------INDICATION--------------------------------
 
