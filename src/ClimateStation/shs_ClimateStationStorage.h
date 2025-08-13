@@ -14,6 +14,8 @@
 #include "shs_ClimateStationData.h"
 #include "shs_ClimateStationConfig.h"
 
+#include <FS.h>
+
 
 
 namespace shs
@@ -31,8 +33,8 @@ public:
     enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
 
 
-    ClimateStationStorage(uint8_t SD_CS);
-
+    // ClimateStationStorage(uint8_t SD_CS, SPIClass& spi);
+    ClimateStationStorage(FS& fs) : m_fs(fs) {}
 
     void start() override;
     void tick() override;
@@ -75,10 +77,12 @@ private:
     static constexpr auto m_TFT_TOUCH_CALIBRATION_DATA_SIZE = 5;                  // size in uint16_t (10 bytes)
 
     Status m_status;
-    const uint8_t m_SD_CS;
+    // const uint8_t m_SD_CS;
+    // SPIClass& m_spi;
+    FS& m_fs;
 
     static void m_z_filled(uint8_t value, char* buf);
 
 
-    static void m_checkAndCreateDirectory(const shs::t::shs_string_t& dir_name);
+    void m_checkAndCreateDirectory(const shs::t::shs_string_t& dir_name);
 };

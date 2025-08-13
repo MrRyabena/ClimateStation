@@ -1,9 +1,9 @@
 #include "shs_ClimateStationStorage.h"
 
 
-shs::ClimateStationStorage::ClimateStationStorage(const uint8_t SD_CS)
-    : m_SD_CS(SD_CS)
-{}
+// shs::ClimateStationStorage::ClimateStationStorage(const uint8_t SD_CS, SPIClass& spi)
+//     : m// m_SD_CS(SD_CS), m_spi(spi)
+// {}
 
 
 void shs::ClimateStationStorage::start()
@@ -14,19 +14,21 @@ void shs::ClimateStationStorage::start()
 
 void shs::ClimateStationStorage::tick()
 {
-    if (m_status != Status::CARD_OK) beginSD();
+    //if (m_status != Status::CARD_OK) beginSD();
 }
 
 
 void shs::ClimateStationStorage::stop()
-{}
+{
+    // m_fs.end();
+}
 
 
 bool shs::ClimateStationStorage::saveNextData(const shs::ClimateStationData& data)
 {
     if (m_status != Status::CARD_OK) return false;
 
-    File file = SD.open(m_getDateFileName(data.time), FILE_APPEND);
+    File file = m_fs.open(m_getDateFileName(data.time), FILE_APPEND);
     if (!file) { return false; }
 
     file.write(reinterpret_cast<const uint8_t*>(&data), sizeof(data));
@@ -35,26 +37,28 @@ bool shs::ClimateStationStorage::saveNextData(const shs::ClimateStationData& dat
     return true;
 }
 
-
+#include <shs_debug.h>
 bool shs::ClimateStationStorage::beginSD()
 {
-    bool result = SD.begin(m_SD_CS);
+    //bool result = m_fs.begin(m_SD_CS, m_spi, 2500000);
 
-    if (!result)
-    {
-        uint8_t cardType = SD.cardType();
-        switch (cardType)
-        {
-            case CARD_NONE: m_status = Status::CARD_NONE; break;
-            case CARD_MMC: [[fallthrough]];
-            case CARD_SD: [[fallthrough]];
-            case CARD_SDHC: [[fallthrough]];
-            default: m_status = Status::CARD_UNKNOWN; break;
-        }
+    // if (!result)
+    // {
+    //    // uint8_t cardType = m_fs.cardType();
+    //     switch (cardType)
+    //     {
+    //         case CARD_NONE: m_status = Status::CARD_NONE; break;
+    //         case CARD_MMC: [[fallthrough]];
+    //         case CARD_SD: [[fallthrough]];
+    //         case CARD_SDHC: [[fallthrough]];
+    //         default: m_status = Status::CARD_UNKNOWN; break;
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
+    //
+   // if (!m_fs) { m_status = Status::CARD_NONE; return false; }
     m_status = Status::CARD_OK;
 
     m_checkAndCreateDirectory(m_STORAGE_DIR);
@@ -68,7 +72,7 @@ bool shs::ClimateStationStorage::beginSD()
 bool shs::ClimateStationStorage::save_TFT_calData(const uint16_t* calData)
 {
     m_checkAndCreateDirectory(m_TFT_DATA_DIR);
-    auto file = SD.open(shs::t::shs_string_t(m_TFT_DATA_DIR) + F("TOUCH_calibration_data.shsf"), FILE_WRITE);
+    auto file = m_fs.open(shs::t::shs_string_t(m_TFT_DATA_DIR) + F("TOUCH_calibration_data.shsf"), FILE_WRITE);
 
     if (!file) return false;
 
@@ -81,7 +85,7 @@ bool shs::ClimateStationStorage::save_TFT_calData(const uint16_t* calData)
 
 bool shs::ClimateStationStorage::get_TFT_calData(uint16_t* calData)
 {
-    auto file = SD.open(shs::t::shs_string_t(m_TFT_DATA_DIR) + F("TOUCH_calibration_data.shsf"), FILE_READ);
+    auto file = m_fs.open(shs::t::shs_string_t(m_TFT_DATA_DIR) + F("TOUCH_calibration_data.shsf"), FILE_READ);
 
     if (!file) return false;
 
@@ -101,7 +105,7 @@ bool shs::ClimateStationStorage::saveConfig(const shs::ClimateStationConfig& con
 
 bool shs::ClimateStationStorage::getConfig(shs::ClimateStationConfig& config)
 {
-    if (SD.exists(shs::t::shs_string_t(m_CONFIG_FILE) + "config.shsf"))
+    if (m_fs.exists(shs::t::shs_string_t(m_CONFIG_FILE) + "config.shsf"))
     {
         // shs::ClimateStationConfig conf;
         readFile(shs::t::shs_string_t(m_CONFIG_FILE) + "config.shsf", reinterpret_cast<uint8_t*>(&config), sizeof(config));
@@ -120,7 +124,7 @@ bool shs::ClimateStationStorage::getConfig(shs::ClimateStationConfig& config)
 
 size_t shs::ClimateStationStorage::readFile(const shs::t::shs_string_t& fname, uint8_t* buf, const size_t size)
 {
-    auto file = SD.open(fname, FILE_READ);
+    auto file = m_fs.open(fname, FILE_READ);
     if (!file) return 0;
 
     auto bytes = file.read(buf, size);
@@ -133,7 +137,7 @@ size_t shs::ClimateStationStorage::readFile(const shs::t::shs_string_t& fname, u
 size_t shs::ClimateStationStorage::writeFile(const shs::t::shs_string_t& fname, const uint8_t* buf, const size_t size)
 {
     m_checkAndCreateDirectory(fname.substring(0, fname.lastIndexOf('/')));
-    auto file = SD.open(fname, FILE_WRITE);
+    auto file = m_fs.open(fname, FILE_WRITE);
     if (!file) return 0;
 
     auto bytes = file.write(buf, size);
@@ -172,9 +176,9 @@ void shs::ClimateStationStorage::m_checkAndCreateDirectory(const shs::t::shs_str
     auto sub_dir = dir_name.substring(0, i);
     sub_dir.reserve(dir_name.length());
 
-    if (!SD.exists(sub_dir))
+    if (!m_fs.exists(sub_dir))
     {
-        SD.mkdir(sub_dir);
+        m_fs.mkdir(sub_dir);
     }
 
 
@@ -185,9 +189,9 @@ void shs::ClimateStationStorage::m_checkAndCreateDirectory(const shs::t::shs_str
         sub_dir += dir_name.substring(i, new_i);
         i = new_i;
 
-        if (!SD.exists(sub_dir))
+        if (!m_fs.exists(sub_dir))
         {
-            if (SD.mkdir(sub_dir));
+            if (m_fs.mkdir(sub_dir));
         }
     }
 
