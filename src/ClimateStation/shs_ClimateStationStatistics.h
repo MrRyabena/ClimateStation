@@ -33,6 +33,7 @@ public:
     void stop() override {}
 
     shs::IndicatorWidget::ValueTrend getTrend(shs::ClimateStationMetrics metric);
+    shs::t::shs_coord_t getTrendCoeff(shs::ClimateStationMetrics metric);
 
 protected:
     std::shared_ptr<shs::ClimateStationStorage> m_storage;

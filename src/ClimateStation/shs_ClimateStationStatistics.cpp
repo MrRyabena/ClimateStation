@@ -37,6 +37,26 @@ shs::IndicatorWidget::ValueTrend shs::ClimateStationStatistics::getTrend(shs::Cl
     return m_getTrend(apr.get().first);
 }
 
+shs::t::shs_coord_t shs::ClimateStationStatistics::getTrendCoeff(const shs::ClimateStationMetrics metric)
+{
+    shs::Approximation apr;
+    switch (metric)
+    {
+        using m = shs::ClimateStationMetrics;
+
+        case m::CO2: for (auto& x : m_data) apr.addValue(x.CO2); break;
+        case m::IN_HUM: for (auto& x : m_data) apr.addValue(x.indoor_humidity.toFloat()); break;
+        case m::IN_TEMP: for (auto& x : m_data) apr.addValue(x.indoor_temperature.toFloat()); break;
+        case m::OUT_HUM: for (auto& x : m_data) apr.addValue(x.outdoor_humidity.toFloat()); break;
+        case m::OUT_TEMP: for (auto& x : m_data) apr.addValue(x.outdoor_temperature.toFloat()); break;
+        case m::PRESSURE: for (auto& x : m_data) apr.addValue(x.pressure.toFloat()); break;
+
+        default: return 0; break;
+    }
+
+    return apr.get().first;
+}
+
 
 void shs::ClimateStationStatistics::m_addData(const shs::ClimateStationData& data)
 {
