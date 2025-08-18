@@ -6,7 +6,7 @@ void shs::Approximation::addPoint(const shs::Point<>& point)
     m_sumX += point.x;
     m_sumY += point.y;
     m_sumX2 += point.x * point.x;
-    m_sumXY += point.x + point.y;
+    m_sumXY += point.x * point.y;
     m_data_size++;
 }
 
@@ -15,7 +15,7 @@ void shs::Approximation::addValue(const shs::t::shs_float_t value)
     m_sumX += value;
     m_sumY += m_data_size;
     m_sumX2 += value * value;
-    m_sumXY += value + m_data_size;
+    m_sumXY += value * m_data_size;
     m_data_size++;
 }
 
