@@ -14,7 +14,7 @@ namespace shs
 struct shs::ClimateStationConfig
 {
     // ----------------------------------INFO-----------------------------------
-    shs::version::Version config_version = "v1.1.0";
+    shs::version::Version config_version = "v1.2.0";
 
     // ---------------------------------SENSORS---------------------------------
 
@@ -49,5 +49,8 @@ struct shs::ClimateStationConfig
     uint8_t  MIN_COLOR_H = 0;              // red
     uint8_t  MAX_COLOR_H = 90;             // green
     uint8_t  LED_BRIGHTNESS = 40;
+
+    // -----------------------------TBOT-----------------------------------------
+    char T_BOT_TOKEN[60] = CS_TBOT_VVR_TOKEN;
 
 };
