@@ -17,7 +17,7 @@ shs::ClimateStation::ClimateStation(std::shared_ptr<shs::ClimateStationStorage> 
     if (!m_rtc && m_storage->cs_config.sensors_flags & shs::etoi(SensorsNumbers::DS3231_b))
         m_rtc = std::make_shared<GyverDS3231>();
 
-    if (m_ntp && m_storage->cs_config.sensors_flags & shs::etoi(SensorsNumbers::NTP_b))
+    if (!m_ntp && m_storage->cs_config.sensors_flags & shs::etoi(SensorsNumbers::NTP_b))
         m_ntp = std::make_shared<GyverNTP>(shs::settings::GMT);
 }
 
