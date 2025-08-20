@@ -8,6 +8,7 @@
 #include "GUIcore/shs_ThemeColors.h"
 
 #include <AutoOTA.h>
+#include <shs_ControlWiFi.h>
 
 namespace shs
 {

@@ -3,7 +3,7 @@
 void shs::UpdateWindow::start()
 {
     m_tft->fillScreen(shs::utils::rgb565(shs::ThemeColors::BACKGROUND));
-
+    
     AutoOTA ota(m_version, "https://raw.githubusercontent.com/MrRyabena/ClimateStation/main/project.json");
 
     auto label = std::make_shared<shs::Label>(m_tft, shs::t::shs_string_t(F("Version: ")) + ota.version(), 2, 2);
@@ -12,9 +12,9 @@ void shs::UpdateWindow::start()
     delay(2000);
     m_tft->fillScreen(shs::utils::rgb565(shs::ThemeColors::BACKGROUND));
 
-
+    
     String ver, notes;
-    if (ota.checkUpdate(&ver, &notes))
+    if (shs::ControlWiFi::WiFiConnected() && ota.checkUpdate(&ver, &notes))
     {
         {
             auto label = std::make_shared<shs::Label>(m_tft, shs::t::shs_string_t(F("New version: ")) + ver, 2, 2);
