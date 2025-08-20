@@ -5,8 +5,8 @@
 #include <Arduino.h>
 #include <Stamp.h>
 
-#include <SPI.h>
-#include <SD.h>
+// #include <SPI.h>
+// #include <SD.h>
 
 #include <shs_ProgramTimer.h>
 #include <shs_Process.h>
@@ -23,18 +23,18 @@ namespace shs
     class ClimateStationStorage;
 }
 
-
+using FS = fs::FS;
 class shs::ClimateStationStorage : public shs::Process
 {
 public:
-
+    
     shs::ClimateStationConfig cs_config;
 
     enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
 
 
     // ClimateStationStorage(uint8_t SD_CS, SPIClass& spi);
-    ClimateStationStorage(FS& fs) : m_fs(fs) {}
+    ClimateStationStorage(FS& set_fs) : m_fs(set_fs) {}
 
     void start() override;
     void tick() override;
@@ -54,7 +54,7 @@ public:
 
     void endSD()
     {
-        SD.end();
+      //  SD.end();
     }
 
     [[nodiscard]] size_t readFile(const shs::t::shs_string_t& fname, uint8_t* buf, size_t size);
@@ -62,10 +62,10 @@ public:
 
     String readTest()
     {
-        auto file = SD.open("/test.txt");
-        auto str = file.readString();
-        file.close();
-        return str;
+     //   auto file = SD.open("/test.txt");
+       // auto str = file.readString();
+        //file.close();
+        ///return str;
     }
 
     static shs::t::shs_string_t m_getDateFileName(shs::t::shs_time_t time);
