@@ -1,65 +1,65 @@
-#pragma once
+// #pragma once
 
-#include <SPI.h>
-#include <SD.h>
+// #include <SPI.h>
+// #include <SD.h>
 
-#include <shs_debug.h>
+// #include <shs_debug.h>
 
-namespace shs
-{
-    class SDCard;
-}
-
-
-class shs::SDCard
-{
-public:
-    enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
+// namespace shs
+// {
+//     class SDCard;
+// }
 
 
-    SDCard(const uint8_t CS, const uint8_t MOSI, const uint8_t MISO, const uint8_t SCK)
-        : m_CS(CS), m_MOSI(MOSI), m_MISO(MISO), m_SCK(SCK), m_spi(VSPI)
-    {
-        pinMode(m_CS, OUTPUT);
-        digitalWrite(m_CS, HIGH);
-    }
+// class shs::SDCard
+// {
+// public:
+//     enum class Status : uint8_t { CARD_NONE, CARD_UNKNOWN, CARD_OK };
 
-    bool begin();
 
-    Status getStatus() const { return m_status; }
+//     SDCard(const uint8_t CS, const uint8_t MOSI, const uint8_t MISO, const uint8_t SCK)
+//         : m_CS(CS), m_MOSI(MOSI), m_MISO(MISO), m_SCK(SCK), m_spi(VSPI)
+//     {
+//         pinMode(m_CS, OUTPUT);
+//         digitalWrite(m_CS, HIGH);
+//     }
 
-    void end()
-    {
-        SD.end();
-        m_spi.end();
-        digitalWrite(m_CS, HIGH);
-    }
+//     bool begin();
 
-    String readTest()
-    {
-        if (m_status != Status::CARD_OK)
-        {
-            return "SD Card not ready";
-        }
+//     Status getStatus() const { return m_status; }
 
-        File file = SD.open("/test.txt");
-        if (!file)
-        {
-            return "Failed to open file";
-        }
+//     void end()
+//     {
+//         SD.end();
+//         m_spi.end();
+//         digitalWrite(m_CS, HIGH);
+//     }
 
-        String str = file.readString();
-        file.close();
-        return str;
-    }
+//     String readTest()
+//     {
+//         if (m_status != Status::CARD_OK)
+//         {
+//             return "SD Card not ready";
+//         }
 
-private:
-    SPIClass m_spi;
+//         File file = SD.open("/test.txt");
+//         if (!file)
+//         {
+//             return "Failed to open file";
+//         }
 
-    Status m_status;
+//         String str = file.readString();
+//         file.close();
+//         return str;
+//     }
 
-    const uint8_t m_CS;
-    const uint8_t m_MOSI;
-    const uint8_t m_MISO;
-    const uint8_t m_SCK;
-};
+// private:
+//     SPIClass m_spi;
+
+//     Status m_status;
+
+//     const uint8_t m_CS;
+//     const uint8_t m_MOSI;
+//     const uint8_t m_MISO;
+//     const uint8_t m_SCK;
+// };
