@@ -1,5 +1,5 @@
 #include "shs_ClimateStationVisualizer.h"
-#include <shs_debug.h>
+
 
 shs::ClimateStationVisualizer::ClimateStationVisualizer(std::shared_ptr<shs::ClimateStation> climate_station,
     std::shared_ptr<shs::ClimateStationStorage> storage, std::shared_ptr<TFT_eSPI> m_tft,
@@ -19,22 +19,17 @@ void shs::ClimateStationVisualizer::start()
     FastLED.setBrightness(0);
     m_updateLED();
 
-    doutln("init tft");
     m_tft->init();
     m_tft->setRotation(3);
     m_tft->fillScreen(shs::utils::rgb565(shs::ThemeColors::BACKGROUND));
-
     enableTFT();
-    doutln("enable tft");
-    doutln("starting calibrate");
+ 
     m_touch_calibrate();
-    doutln("calibrated");
 
     m_statistics->start();
-    doutln("started statistics");
+
     shs::FirstWindow fw(m_tft, m_storage);
     fw.start();
-    doutln("fits window");
 }
 
 
