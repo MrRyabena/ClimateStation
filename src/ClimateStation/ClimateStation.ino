@@ -11,7 +11,6 @@
 #include "shs_ClimateStationStorage.h"
 #include "shs_ClimateStationConfig.h"
 #include "ClimateStationGUIcore.h"
-#include "shs_SDCard.h"
 #include "UpdateWindow.h"
 
 #include <SPI.h>
@@ -36,22 +35,14 @@ CRGB leds[LEDS_NUM]{};
 #include <AutoOTA.h>
 void checkUpdate();
 
-SPIClass SDspi;
-
-// #define DEBUG
-// #include <shs_debug.h>
-
 void setup()
 {
     // dinit();
     // WiFi
-    shs::ControlWiFi::connectWiFi();
+    //shs::ControlWiFi::connectWiFi();
+    shs::ControlWiFi::connectWiFiMulti();
     delay(500);
 
-    // doutln("wifi connected");
-
-    
-   // 
 
     pinMode(1, OUTPUT);
     pinMode(3, OUTPUT);
@@ -64,31 +55,16 @@ void setup()
         
     tft_ptr = std::make_shared<TFT_eSPI>();
 
-
-
-
     // Storage
     LittleFS.begin();
 
     //SDspi.begin(SD_SCK, SD_MISO, SD_MOSI);
     storage = std::make_shared<shs::ClimateStationStorage>(LittleFS);
     storage->start();
-    //digitalWrite(SD_CS, HIGH);
-    //storage->stop();
-    //digitalWrite(SD_CS, HIGH);
     
-
-  // while (storage->getStatus() != shs::ClimateStationStorage::Status::CARD_OK) { storage->tick(); delay(50); }
-
-    // dout("status: "); doutln(shs::etoi(storage->getStatus()));
-
     climate_station = std::make_shared<shs::ClimateStation>(storage);
     climate_station->start();
 
-    //tft_ptr->begin();
-
-    
-    // doutln("cl started");
 
     FastLED.addLeds<WS2812B, LEDS_PIN, RGB>(leds, LEDS_NUM);  // GRB ordering is typical
     FastLED.setMaxPowerInMilliWatts(1500);
@@ -99,17 +75,13 @@ void setup()
     tft_ptr, storage->cs_config.TFT_LED_PIN, LEDS_NUM, LEDS_PIN
     );
 
-    // doutln("visualizer starting");
 
     climate_station_visualizer->start();
-    // doutln("started");
 
     checkUpdate();
 
-    // doutln("Updated checked");
 
     climate_station_visualizer->enable();
-    // doutln("setup end!");
 }
 
 
