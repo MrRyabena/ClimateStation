@@ -11,6 +11,7 @@
 #include "GUIcore/IndicatorWidget.h"
 
 #include "CO2_chart.h"
+#include "Pressure_chart.h"
 
 #include "shs_ClimateStation.h"
 

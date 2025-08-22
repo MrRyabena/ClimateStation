@@ -24,8 +24,10 @@ void shs::ChartWindow::start()
     auto fname = shs::ClimateStationStorage::m_getDateFileName(m_climate_station->getData().time);
     analyzer->addFile(fname);
 
-    attachLayer(std::make_shared<shs::CO2_chart>(m_storage, m_tft, analyzer, 0, 0, width - 10, height - 60), shs::Widget::Align::BOTTOM | shs::Widget::LEFT, 5, 5);
-
+    // TODO
+    // attachLayer(std::make_shared<shs::CO2_chart>(m_storage, m_tft, analyzer, 0, 0, width - 10, height - 60), shs::Widget::Align::BOTTOM | shs::Widget::LEFT, 5, 5);
+    attachLayer(std::make_shared<shs::Pressure_chart>(m_storage, m_tft, analyzer, 0, 0, width - 10, height - 60), shs::Widget::Align::BOTTOM | shs::Widget::LEFT, 5, 5);
+    
     Widget::start();
     Widget::tick();
 }
