@@ -9,6 +9,7 @@
 void shs::ClimateStationStorage::start()
 {
     beginSD();    // Reading the config, if it exists. If not, then save the default values.
+    m_checkAndCreateDirectory(F("/SHS/SHS_ClimateStation/images/"));
 }
 
 
@@ -119,6 +120,86 @@ bool shs::ClimateStationStorage::getConfig(shs::ClimateStationConfig& config)
 
     saveConfig(config);
     return false;
+}
+
+bool shs::ClimateStationStorage::saveTBotToken(const String& token)
+{
+    m_checkAndCreateDirectory(m_TBOT_DATA_DIR);
+
+    return writeFile(shs::t::shs_string_t(m_TBOT_DATA_DIR) + F("bot_token.shsf"), reinterpret_cast<const uint8_t*>(token.c_str()), token.length());
+    
+}
+
+const String shs::ClimateStationStorage::getTBotToken()
+{
+    auto fname = shs::t::shs_string_t(m_TBOT_DATA_DIR) + F("bot_token.shsf");
+
+    if (!m_fs.exists(fname))
+    {
+        saveTBotToken(SHS_CS_DEFAULT_TBOT_TOKEN);
+        
+        return SHS_CS_DEFAULT_TBOT_TOKEN;
+    }
+    else 
+    {
+        char* buf = new char[60]{};
+    
+
+    auto bytes = readFile(fname, reinterpret_cast<uint8_t*>(buf), 60);
+    
+    String str{buf};
+
+    delete [] buf;
+
+    return bytes ? str : "";
+    }
+
+    return {};
+}
+
+bool shs::ClimateStationStorage::saveTBotUsers(const std::vector<std::pair<String, String>> &users)
+{
+    m_checkAndCreateDirectory(m_TBOT_DATA_DIR);
+
+    auto file = m_fs.open(shs::t::shs_string_t(m_TBOT_DATA_DIR) + "users.shsf", "w");
+    
+    if (!file) return false;
+
+    for (auto &x : users) 
+    {
+        file.print(x.first);
+        file.print(' ');
+        file.println(x.second);
+    }
+    file.close();
+
+    return true;
+}
+
+
+std::vector<std::pair<String, String>> shs::ClimateStationStorage::getTBotUsers()
+{
+    m_checkAndCreateDirectory(m_TBOT_DATA_DIR);
+    auto fname = shs::t::shs_string_t(m_TBOT_DATA_DIR) + "users.shsf";
+
+    auto file = m_fs.open(fname, "r");
+    if (!file) return {};
+
+    std::vector<std::pair<String, String>> v;
+
+    while (file.available())
+    {
+        auto str = file.readStringUntil('\n');
+        if (str)
+        {
+            auto ind = str.indexOf(' ');
+            v.push_back(std::pair<String, String>(str.substring(0, ind), str.substring(ind + 1)));
+        }
+    }
+
+    file.close();
+    
+    return v;
 }
 
 

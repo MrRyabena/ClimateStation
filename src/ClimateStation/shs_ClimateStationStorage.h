@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include <Arduino.h>
 #include <Stamp.h>
@@ -13,6 +14,7 @@
 
 #include "shs_ClimateStationData.h"
 #include "shs_ClimateStationConfig.h"
+#include "settings.h"
 
 #include <FS.h>
 
@@ -52,6 +54,11 @@ public:
     bool saveConfig(const shs::ClimateStationConfig& config);
     bool getConfig(shs::ClimateStationConfig& config);
 
+    bool saveTBotToken(const String& token);
+    const String getTBotToken();
+    bool saveTBotUsers(const std::vector<std::pair<String, String>>& users);
+    std::vector<std::pair<String, String>> getTBotUsers();
+  
     void endSD()
     {
       //  SD.end();
@@ -75,6 +82,7 @@ private:
     static constexpr auto m_STORAGE_DIR = "/SHS/SHS_ClimateStation/storage/";
     static constexpr auto m_TFT_DATA_DIR = "/SHS/SHS_ClimateStation/TFT_data/";
     static constexpr auto m_TFT_TOUCH_CALIBRATION_DATA_SIZE = 5;                  // size in uint16_t (10 bytes)
+    static constexpr auto m_TBOT_DATA_DIR = "/SHS/SHS_ClimateStation/TBot/";
 
     Status m_status;
     // const uint8_t m_SD_CS;
