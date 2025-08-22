@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include <FastLED.h>
 
 #include "GUIcore/Widget.h"
 #include "GUIcore/Label.h"
