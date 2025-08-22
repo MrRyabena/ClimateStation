@@ -20,7 +20,7 @@ shs::ChartAnalyzer::~ChartAnalyzer()
 
 bool shs::ChartAnalyzer::addFile(const shs::t::shs_string_t& fname)
 {
-    File file = SD.open(fname, FILE_READ);
+    File file = LittleFS.open(fname, FILE_READ); //SD.open(fname, FILE_READ);
 
     if (!file) return false;
 
@@ -69,7 +69,7 @@ bool shs::ChartAnalyzer::beginPoints()
     auto currentFileName = m_files[m_cursor];
 
     if (m_file) m_file.close();
-    m_file = SD.open(currentFileName, FILE_READ);
+    m_file = LittleFS.open(currentFileName, FILE_READ); //SD.open(currentFileName, FILE_READ);
 
     return true;
 }
@@ -102,7 +102,7 @@ bool shs::ChartAnalyzer::openNextFile()
     if (++m_cursor == m_files.size()) return false;
 
     auto currentFileName = m_files[m_cursor];
-    m_file = SD.open(currentFileName, FILE_READ);
+    m_file = LittleFS.open(currentFileName, FILE_READ); // SD.open(currentFileName, FILE_READ);
 
     return true;
 }
@@ -119,11 +119,11 @@ shs::t::shs_float_t shs::ChartAnalyzer::m_getMetric(const shs::ClimateStationDat
     {
         using m = shs::ClimateStationMetrics;
         case shs::etoi(m::CO2):      return data.CO2; break;
-        case shs::etoi(m::IN_HUM):   return data.indoor_humidity; break;
-        case shs::etoi(m::IN_TEMP):  return data.indoor_temperature; break;
-        case shs::etoi(m::OUT_HUM):  return data.outdoor_humidity; break;
-        case shs::etoi(m::OUT_TEMP): return data.outdoor_temperature; break;
-        case shs::etoi(m::PRESSURE): return data.pressure; break;
+        case shs::etoi(m::IN_HUM):   return data.indoor_humidity.toFloat(); break;
+        case shs::etoi(m::IN_TEMP):  return data.indoor_temperature.toFloat(); break;
+        case shs::etoi(m::OUT_HUM):  return data.outdoor_humidity.toFloat(); break;
+        case shs::etoi(m::OUT_TEMP): return data.outdoor_temperature.toFloat(); break;
+        case shs::etoi(m::PRESSURE): return data.pressure.toFloat(); break;
 
         default: return 0;
             break;

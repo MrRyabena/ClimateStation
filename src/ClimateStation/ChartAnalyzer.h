@@ -5,7 +5,7 @@
 #include <vector>
 #include <algorithm>
 
-#include <SD.h>
+#include <LittleFS.h>
 
 #include <shs_types.h>
 
@@ -48,7 +48,7 @@ protected:
     std::shared_ptr<shs::ClimateStationStorage> m_storage;
     std::vector<shs::t::shs_string_t> m_files;
     uint16_t m_cursor{};
-    File m_file{};
+    fs::File m_file{};
     shs::t::shs_coord_t m_width;
     shs::t::shs_coord_t m_height;
 
