@@ -17,7 +17,7 @@ void shs::ClimateStationVisualizer::start()
     FastLED.clear();
     FastLED.show();
     FastLED.setBrightness(0);
-    m_updateLED();
+    //m_updateLED();
 
     m_tft->init();
     m_tft->setRotation(3);
@@ -30,6 +30,8 @@ void shs::ClimateStationVisualizer::start()
 
     shs::FirstWindow fw(m_tft, m_storage);
     fw.start();
+
+    m_updateLED();
 }
 
 
@@ -89,19 +91,19 @@ void shs::ClimateStationVisualizer::m_updateLED()
     auto data = m_cls->getData();
     int hue{};
 
-      if (m_storage->cs_config.sensors_flags & shs::etoi(shs::ClimateStation::SensorsNumbers::MHZ19_b))
+    if (m_storage->cs_config.sensors_flags & shs::etoi(shs::ClimateStation::SensorsNumbers::MHZ19_b))
         hue = map(data.CO2, m_storage->cs_config.MIN_CO2, m_storage->cs_config.MAX_CO2, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
     else 
     {
         float coeff = abs(m_statistics->getTrendCoeff(shs::ClimateStationMetrics::PRESSURE));
-        hue = map(coeff, 0.0, 1.5, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);  // TODO: add limits in config
+        hue = map(coeff, 0.0, 1.5, m_storage->cs_config.MAX_COLOR_H, m_storage->cs_config.MIN_COLOR_H);  // TODO: add limits in config
     }
 
     
     m_led_hue = constrain(hue, m_storage->cs_config.MIN_COLOR_H, m_storage->cs_config.MAX_COLOR_H);
 
     FastLED.showColor(static_cast<CRGB>(CHSV(m_led_hue, 255, 255)));
-}
+}   
 
 void shs::ClimateStationVisualizer::m_enableLED()
 {
