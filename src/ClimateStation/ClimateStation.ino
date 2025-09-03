@@ -42,7 +42,7 @@ CRGB leds[LEDS_NUM]{};
 
 #include <AutoOTA.h>
 void checkUpdate();
-void checkLEDcolors();
+[[maybe_unused]] void checkLEDcolors();
 
 void setup()
 {
@@ -52,15 +52,6 @@ void setup()
     shs::ControlWiFi::connectWiFiMulti();
     delay(500);
 
-
-    pinMode(1, OUTPUT);
-    pinMode(3, OUTPUT);
-    pinMode(15, OUTPUT);
-    pinMode(33, OUTPUT);
-
-    digitalWrite(1, HIGH); 
-    digitalWrite(15, HIGH);
-    digitalWrite(33, HIGH);
         
     tft_ptr = std::make_shared<TFT_eSPI>();
 
@@ -71,7 +62,7 @@ void setup()
         LittleFS.begin();
     }
 
-    //SDspi.begin(SD_SCK, SD_MISO, SD_MOSI);
+
     storage = std::make_shared<shs::ClimateStationStorage>(LittleFS);
     storage->start();
     
