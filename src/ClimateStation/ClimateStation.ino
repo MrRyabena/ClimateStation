@@ -1,5 +1,11 @@
 #include "settings.h"
 
+#include <shs_version.h>
+#include <assert.h>
+
+static_assert(shs::version::project == "v2.2.2");
+
+
 #include <shs_settings_private.h>
 
 #include <shs_ProgramTimer.h>
