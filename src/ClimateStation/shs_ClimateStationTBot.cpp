@@ -41,9 +41,9 @@ void shs::ClimateStationTBot::handleCommand(fb::Update& update)
            msg.text += update.message().from().firstName().toString();
            msg.text += ' ';
            msg.text += update.message().from().lastName().toString();
-           msg.text += F("!\n\nЯ бот ClimateStation и могу помочь получить актуальную информацию с датчиков. Чтобы узнать текущие показатели пришли мне /getData или воспользуйся специальной кнопкой.\n\n"
+           msg.text += "!\n\nЯ бот ClimateStation и могу помочь получить актуальную информацию с датчиков. Чтобы узнать текущие показатели пришли мне /getData или воспользуйся специальной кнопкой.\n\n"
             "Я могу присылать данные каждый день в указанное время, для этого отправь \"/notify чч:мм\", где вместо чч:мм укажи время, в которое будут приходить уведомления.\n"
-            "Если ты устанешь от моих сообщений, отправь мне /mute, и я перестану их присылать!\n\n");
+            "Если ты устанешь от моих сообщений, отправь мне /mute, и я перестану их присылать!\n\n";
            
             msg.chatID = chat_id;
 
@@ -63,15 +63,15 @@ void shs::ClimateStationTBot::handleCommand(fb::Update& update)
             
             msg.mode = fb::Message::Mode::HTML;
 
-            msg.text = F("<b><i>Общие показатели:</i></b>\n    Атмосферное давление: ");
+            msg.text = "<b><i>Общие показатели:</i></b>\n    Атмосферное давление: ";
             msg.text += pressureToMmHg(data.pressure);
-            msg.text += F(" mmHg\n\n<b><i>Снаружи:</i></b>\n    Температура: ");
+            msg.text += " mmHg\n\n<b><i>Снаружи:</i></b>\n    Температура: ";
             msg.text += data.outdoor_temperature.toFloat();
-            msg.text += F(" °C\n    Влажность: ");
+            msg.text += " °C\n    Влажность: ";
             msg.text += data.outdoor_humidity.toFloat();
-            msg.text += F("%\n\n<b><i>Внутри:</i></b>\n    Температура: ");
+            msg.text += "%\n\n<b><i>Внутри:</i></b>\n    Температура: ";
             msg.text += data.indoor_temperature.toFloat();
-            msg.text += F(" °C\n    Влажность: ");
+            msg.text += " °C\n    Влажность: ";
             msg.text += data.indoor_humidity.toFloat();
             msg.text += F("%");
             
@@ -94,7 +94,7 @@ void shs::ClimateStationTBot::handleCommand(fb::Update& update)
             
             fb::Message msg;
 
-            msg.text = F("Теперь я больше не буду присылать тебе уведомления(\nЕсли ты захочешь получать их снова, отправь мне \"/notify чч:мм\", где вместо чч:мм укажи время, в которое будут приходить уведомления.");
+            msg.text = "Теперь я больше не буду присылать тебе уведомления(\nЕсли ты захочешь получать их снова, отправь мне \"/notify чч:мм\", где вместо чч:мм укажи время, в которое будут приходить уведомления.";
             msg.chatID = chat_id;
 
             bot.sendMessage(msg);
@@ -202,10 +202,10 @@ void shs::ClimateStationTBot::handleCommand(fb::Update& update)
 
         fb::Message msg;
 
-        msg.text = F("Отлично, теперь я буду присылать показания датчиков каждый день в ");
+        msg.text = "Отлично, теперь я буду присылать показания датчиков каждый день в ";
         msg.text += time_str.toString();
-        msg.text += F(".\nЕсли хочешь получать несколько уведомлений, можешь добавить время, повторив предыдущую команду.\n"
-            "Если ты устанешь от моих сообщений, отправь мне /mute, и я перестану их присылать!");
+        msg.text += ".\nЕсли хочешь получать несколько уведомлений, можешь добавить время, повторив предыдущую команду.\n"
+            "Если ты устанешь от моих сообщений, отправь мне /mute, и я перестану их присылать!";
         
         msg.chatID = chat_id;
 
