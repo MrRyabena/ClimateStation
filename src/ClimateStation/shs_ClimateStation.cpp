@@ -46,14 +46,12 @@ void shs::ClimateStation::tick()
     if (m_main_tmr.check())
     {
         Data data;
-        m_updateSensors();
         m_updateData(data);
     }
 
     if (m_save_tmr.check())
     {
         Data data;
-        m_updateSensors();
         m_updateData(data);
         m_storage->saveNextData(data);
     }
@@ -90,7 +88,7 @@ uint8_t shs::ClimateStation::m_allSensUpdated()
 void shs::ClimateStation::m_updateData(Data& data)
 {
     m_updateSensors();
-    if (m_mhz19) data.CO2 = m_mhz19->getValueI(shs::etoi(shs::MHZ19::Metrics::PPM));
+    if (m_mhz19) data.CO2 = m_mhz19->getValueI();
     else data.CO2 = 0;
 
     if (m_bme)
