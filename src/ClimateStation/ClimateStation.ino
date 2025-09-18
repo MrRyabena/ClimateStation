@@ -50,6 +50,7 @@ void setup()
     // WiFi
     //shs::ControlWiFi::connectWiFi();
     shs::ControlWiFi::connectWiFiMulti();
+    WiFi.setAutoReconnect(true);
     delay(500);
 
         
